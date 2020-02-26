@@ -1,0 +1,28 @@
+{
+  "name": "formler",
+  "version": "0.0.1",
+  "description": "React form library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fyresite/formler.git"
+  },
+  "keywords": [
+    "React",
+    "Form",
+    "Library"
+  ],
+  "author": "Stephen Orr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fyresite/formler/issues"
+  },
+  "homepage": "https://github.com/Fyresite/formler#readme",
+  "dependencies": {
+    "lodash.clonedeep": "^4.5.0",
+    "uuid": "^7.0.1"
+  }
+}
