@@ -1,23 +1,19 @@
 import React from "react";
 
-// class Input extends React.Component {
-//     render() {
-//         const { type = "text", valid, ref, validator, ...rest } = this.props;
-//         return <input type={type} ref={ref} {...rest} />;
-//     }
-// }
+class Input extends React.Component {
+    static defaultProps = {
+        "shlorm-input": true,
+    };
 
-const Input = React.forwardRef((props, ref) => {
-    const { type = "text", valid, validator, value, ...rest } = props; // pull value out of 'rest' so we don't have to rely on re-renders. I know this is bad, but let's face it I'm cloning react children and injecting props we're way passed that.
+    constructor(props) {
+        super(props);
+    }
 
-    console.log("ref", ref);
-
-    return <input type={type} ref={ref.current} {...rest} />;
-});
-
-Input.defaultProps = {
-    "formler-input": true
-};
+    render() {
+        const { type = "text", valid, ref, validator, value, ...rest } = this.props; // pull value out of 'rest' so we don't have to rely on re-renders. I know this is bad, but let's face it I'm cloning react children and injecting props we're way passed that.
+        return <input type={type} ref="input" {...rest} />;
+    }
+}
 
 Input.displayName = "Input";
 

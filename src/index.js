@@ -1,16 +1,16 @@
 import React from "react";
-import uuid from "uuid/v4";
+import { v4 as uuid } from 'uuid';
 import cloneDeep from "lodash.clonedeep";
 
 import Input from "./Input";
 
-class Formler extends React.Component {
+class Shlorm extends React.Component {
     constructor(props) {
         super(props);
 
         const state = { submitted: null };
 
-        // Create state from children
+        // Create state from children 
         if (props.children) {
             let children = props.children;
 
@@ -20,7 +20,7 @@ class Formler extends React.Component {
             }
 
             children.forEach(({ props }) => {
-                if (props["formler-input"]) {
+                if (props["shlorm-input"]) {
                     state[props.name] = {
                         value: props.value || "",
                         valid: true
@@ -58,35 +58,26 @@ class Formler extends React.Component {
     }
 
     updateChildren(state) {
-        if (!this.props.children) {
-            return [];
-        }
+        if (!this.props.children) return [];
 
-        let children = cloneDeep(this.props.children);
-
-        if (!Array.isArray(children)) {
-            children = [children];
-        }
-
-        return children.map(_child => {
-            // Remove formler boolean tags so we don't get any warnings
+        return React.Children.map(this.props.children, _child => {
+            // Remove shlorm boolean tags so we don't get any warnings
             let { props: _props, ...child } = _child;
             let {
-                "formler-input": input,
-                "formler-submit": submit,
+                "shlorm-input": input,
+                "shlorm-submit": submit,
                 ...props
             } = _props;
             child = { props, ...child };
 
             const { name } = child.props;
 
-            props.key = name ? `formler-input-${name}` : uuid();
+            props.key = name ? `shlorm-input-${name}` : uuid();
 
             if (input) {
                 this.form.refs[name] = React.createRef();
 
                 props.ref = this.form.refs[name];
-                console.log("props.ref", props.ref);
                 props.onChange = this.handleChange.bind(this, name);
                 props = { ...props, ...state[name] }; // add value and valid to child
             }
@@ -100,17 +91,12 @@ class Formler extends React.Component {
     }
 
     handleChange(field, e) {
-        this.setState(
-            {
-                [field]: {
-                    value: e.target.value,
-                    valid: true
-                }
-            },
-            () => {
-                this.updateChildren(this.state);
+        this.setState({
+            [field]: {
+                value: e.target.value,
+                valid: true
             }
-        );
+        });
     }
 
     handleSubmit(e) {
@@ -123,11 +109,7 @@ class Formler extends React.Component {
         let focused = false;
 
         Object.keys(refs).forEach(key => {
-            console.log(refs);
-
             const { current } = refs[key];
-
-            console.log(current);
 
             if (current.props && current.props.validator) {
                 let valid = current.props.validator(state[key].value);
@@ -137,14 +119,12 @@ class Formler extends React.Component {
                 if (!valid) {
                     invalid.push({
                         field: key,
-                        message: current.props.errorMessage,
+                        message: current.props.errorMessage || `${key} is invalid`,
                         ref: current
                     });
 
                     Object.keys(current.refs).forEach(key => {
                         const ref = current.refs[key];
-
-                        console.log(ref);
 
                         if (ref.focus && !focused) {
                             ref.focus();
@@ -181,6 +161,8 @@ class Formler extends React.Component {
     }
 }
 
+Shlorm.displayName = "Shlorm";
+
 export { Input };
 
-export default Formler;
+export default Shlorm;
