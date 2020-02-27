@@ -1,6 +1,8 @@
 import React from "react";
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from "uuid";
 import cloneDeep from "lodash.clonedeep";
+
+import shlormify from "./shlormify";
 
 import Input from "./Input";
 
@@ -10,17 +12,10 @@ class Shlorm extends React.Component {
 
         const state = { submitted: null };
 
-        // Create state from children 
+        // Create state from children
         if (props.children) {
-            let children = props.children;
-
-            // In case of one child
-            if (!Array.isArray(children)) {
-                children = [children];
-            }
-
-            children.forEach(({ props }) => {
-                if (props["shlorm-input"]) {
+            React.Children.forEach(props.children, ({ props, ...child }) => {
+                if (child.type.render && child.type.render.shlormInput) {
                     state[props.name] = {
                         value: props.value || "",
                         valid: true
@@ -60,11 +55,14 @@ class Shlorm extends React.Component {
     updateChildren(state) {
         if (!this.props.children) return [];
 
-        return React.Children.map(this.props.children, _child => {
+        const children = React.Children.map(this.props.children, _child => {
+            console.log("_child", _child);
+
             // Remove shlorm boolean tags so we don't get any warnings
             let { props: _props, ...child } = _child;
+
             let {
-                "shlorm-input": input,
+                // "shlorm-input": input,
                 "shlorm-submit": submit,
                 ...props
             } = _props;
@@ -73,6 +71,10 @@ class Shlorm extends React.Component {
             const { name } = child.props;
 
             props.key = name ? `shlorm-input-${name}` : uuid();
+
+            const input = _child.type.render && _child.type.render.shlormInput;
+
+            console.log("input", input);
 
             if (input) {
                 this.form.refs[name] = React.createRef();
@@ -86,8 +88,11 @@ class Shlorm extends React.Component {
                 props.onClick = this.handleSubmit.bind(this);
             }
 
-            return React.cloneElement(child, props);
+            return React.createElement(child.type, props);
+            // return React.cloneElement(child, props);
         });
+
+        return children;
     }
 
     handleChange(field, e) {
@@ -111,15 +116,20 @@ class Shlorm extends React.Component {
         Object.keys(refs).forEach(key => {
             const { current } = refs[key];
 
+            console.log("current", current);
+
             if (current.props && current.props.validator) {
                 let valid = current.props.validator(state[key].value);
+
+                console.log("valid", valid);
 
                 state[key].valid = valid;
 
                 if (!valid) {
                     invalid.push({
                         field: key,
-                        message: current.props.errorMessage || `${key} is invalid`,
+                        message:
+                            current.props.errorMessage || `${key} is invalid`,
                         ref: current
                     });
 
@@ -163,6 +173,6 @@ class Shlorm extends React.Component {
 
 Shlorm.displayName = "Shlorm";
 
-export { Input };
+export { Input, shlormify };
 
 export default Shlorm;

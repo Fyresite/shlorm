@@ -1978,7 +1978,7 @@ function v4(options, buf, offset) {
 var lodash_clonedeep = __webpack_require__(1);
 var lodash_clonedeep_default = /*#__PURE__*/__webpack_require__.n(lodash_clonedeep);
 
-// CONCATENATED MODULE: ./src/Input.js
+// CONCATENATED MODULE: ./src/shlormify.js
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -2003,35 +2003,108 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+var shlormify_shlormify = function shlormify(InputComponent) {
+  var WithShlorm =
+  /*#__PURE__*/
+  function (_React$Component) {
+    _inherits(WithShlorm, _React$Component);
+
+    function WithShlorm() {
+      _classCallCheck(this, WithShlorm);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(WithShlorm).apply(this, arguments));
+    }
+
+    _createClass(WithShlorm, [{
+      key: "render",
+      value: function render() {
+        var _this$props = this.props,
+            valid = _this$props.valid,
+            forwardedRef = _this$props.forwardedRef,
+            value = _this$props.value,
+            rest = _objectWithoutProperties(_this$props, ["valid", "forwardedRef", "value"]); // pull value out of 'rest' so we don't have to rely on re-renders. I know this is bad, but let's face it I'm cloning react children and injecting props we're way passed that.
+
+
+        return external_react_default.a.createElement(InputComponent, _extends({}, rest, {
+          ref: forwardedRef
+        }));
+      }
+    }]);
+
+    return WithShlorm;
+  }(external_react_default.a.Component); // WithShlorm.defaultProps = {
+  //     "shlorm-input": true
+  // };
+
+
+  var forwardRef = function forwardRef(props, ref) {
+    return external_react_default.a.createElement(WithShlorm, _extends({}, props, {
+      forwardedRef: ref
+    }));
+  };
+
+  forwardRef.displayName = "WithShlorm(".concat(getDisplayName(InputComponent), ")");
+  forwardRef.shlormInput = true;
+  return external_react_default.a.forwardRef(forwardRef);
+};
+
+var getDisplayName = function getDisplayName(WrappedComponent) {
+  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+};
+
+/* harmony default export */ var src_shlormify = (shlormify_shlormify);
+// CONCATENATED MODULE: ./src/Input.js
+function Input_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { Input_typeof = function _typeof(obj) { return typeof obj; }; } else { Input_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return Input_typeof(obj); }
+
+function Input_extends() { Input_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return Input_extends.apply(this, arguments); }
+
+function Input_objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = Input_objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function Input_objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+function Input_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Input_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Input_createClass(Constructor, protoProps, staticProps) { if (protoProps) Input_defineProperties(Constructor.prototype, protoProps); if (staticProps) Input_defineProperties(Constructor, staticProps); return Constructor; }
+
+function Input_possibleConstructorReturn(self, call) { if (call && (Input_typeof(call) === "object" || typeof call === "function")) { return call; } return Input_assertThisInitialized(self); }
+
+function Input_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function Input_getPrototypeOf(o) { Input_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return Input_getPrototypeOf(o); }
+
+function Input_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) Input_setPrototypeOf(subClass, superClass); }
+
+function Input_setPrototypeOf(o, p) { Input_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return Input_setPrototypeOf(o, p); }
+
 
 
 
 var Input_Input =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(Input, _React$Component);
+  Input_inherits(Input, _React$Component);
 
   function Input(props) {
-    _classCallCheck(this, Input);
+    Input_classCallCheck(this, Input);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Input).call(this, props));
+    return Input_possibleConstructorReturn(this, Input_getPrototypeOf(Input).call(this, props));
   }
 
-  _createClass(Input, [{
+  Input_createClass(Input, [{
     key: "render",
     value: function render() {
       var _this$props = this.props,
           _this$props$type = _this$props.type,
           type = _this$props$type === void 0 ? "text" : _this$props$type,
-          valid = _this$props.valid,
-          ref = _this$props.ref,
           validator = _this$props.validator,
-          value = _this$props.value,
-          rest = _objectWithoutProperties(_this$props, ["type", "valid", "ref", "validator", "value"]); // pull value out of 'rest' so we don't have to rely on re-renders. I know this is bad, but let's face it I'm cloning react children and injecting props we're way passed that.
+          rest = Input_objectWithoutProperties(_this$props, ["type", "validator"]);
 
-
-      return external_react_default.a.createElement("input", _extends({
+      console.log(rest);
+      return external_react_default.a.createElement("input", Input_extends({
         type: type,
         ref: "input"
       }, rest));
@@ -2039,23 +2112,20 @@ function (_React$Component) {
   }]);
 
   return Input;
-}(external_react_default.a.Component);
+}(external_react_default.a.Component); // Input.displayName = "Input";
 
-_defineProperty(Input_Input, "defaultProps", {
-  "shlorm-input": true
-});
 
-Input_Input.displayName = "Input";
-/* harmony default export */ var src_Input = (Input_Input);
+/* harmony default export */ var src_Input = (src_shlormify(Input_Input));
 // CONCATENATED MODULE: ./src/index.js
 /* concated harmony reexport Input */__webpack_require__.d(__webpack_exports__, "Input", function() { return src_Input; });
+/* concated harmony reexport shlormify */__webpack_require__.d(__webpack_exports__, "shlormify", function() { return src_shlormify; });
 function src_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { src_typeof = function _typeof(obj) { return typeof obj; }; } else { src_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return src_typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { src_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function src_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function src_objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = src_objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
@@ -2082,6 +2152,7 @@ function src_setPrototypeOf(o, p) { src_setPrototypeOf = Object.setPrototypeOf |
 
 
 
+
 var src_Shlorm =
 /*#__PURE__*/
 function (_React$Component) {
@@ -2095,19 +2166,14 @@ function (_React$Component) {
     _this = src_possibleConstructorReturn(this, src_getPrototypeOf(Shlorm).call(this, props));
     var state = {
       submitted: null
-    }; // Create state from children 
+    }; // Create state from children
 
     if (props.children) {
-      var children = props.children; // In case of one child
+      external_react_default.a.Children.forEach(props.children, function (_ref) {
+        var props = _ref.props,
+            child = src_objectWithoutProperties(_ref, ["props"]);
 
-      if (!Array.isArray(children)) {
-        children = [children];
-      }
-
-      children.forEach(function (_ref) {
-        var props = _ref.props;
-
-        if (props["shlorm-input"]) {
+        if (child.type.render && child.type.render.shlormInput) {
           state[props.name] = {
             value: props.value || "",
             valid: true
@@ -2153,20 +2219,22 @@ function (_React$Component) {
       var _this3 = this;
 
       if (!this.props.children) return [];
-      return external_react_default.a.Children.map(this.props.children, function (_child) {
-        // Remove shlorm boolean tags so we don't get any warnings
+      var children = external_react_default.a.Children.map(this.props.children, function (_child) {
+        console.log("_child", _child); // Remove shlorm boolean tags so we don't get any warnings
+
         var _props = _child.props,
             child = src_objectWithoutProperties(_child, ["props"]);
 
-        var input = _props["shlorm-input"],
-            submit = _props["shlorm-submit"],
-            props = src_objectWithoutProperties(_props, ["shlorm-input", "shlorm-submit"]);
+        var submit = _props["shlorm-submit"],
+            props = src_objectWithoutProperties(_props, ["shlorm-submit"]);
 
         child = _objectSpread({
           props: props
         }, child);
         var name = child.props.name;
         props.key = name ? "shlorm-input-".concat(name) : esm_browser_v4();
+        var input = _child.type.render && _child.type.render.shlormInput;
+        console.log("input", input);
 
         if (input) {
           _this3.form.refs[name] = external_react_default.a.createRef();
@@ -2179,13 +2247,14 @@ function (_React$Component) {
           props.onClick = _this3.handleSubmit.bind(_this3);
         }
 
-        return external_react_default.a.cloneElement(child, props);
+        return external_react_default.a.createElement(child.type, props); // return React.cloneElement(child, props);
       });
+      return children;
     }
   }, {
     key: "handleChange",
     value: function handleChange(field, e) {
-      this.setState(src_defineProperty({}, field, {
+      this.setState(_defineProperty({}, field, {
         value: e.target.value,
         valid: true
       }));
@@ -2202,9 +2271,11 @@ function (_React$Component) {
       var focused = false;
       Object.keys(refs).forEach(function (key) {
         var current = refs[key].current;
+        console.log("current", current);
 
         if (current.props && current.props.validator) {
           var valid = current.props.validator(state[key].value);
+          console.log("valid", valid);
           state[key].valid = valid;
 
           if (!valid) {

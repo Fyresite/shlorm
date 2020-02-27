@@ -1,41 +1,41 @@
 {
-  "name": "shlorm",
-  "version": "0.0.1",
-  "description": "React form library",
-  "main": "./build/index.js",
-  "scripts": {
-    "build": "webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Fyresite/formler.git"
-  },
-  "keywords": [
-    "React",
-    "Form",
-    "Library"
-  ],
-  "author": "Stephen Orr",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Fyresite/formler/issues"
-  },
-  "homepage": "https://github.com/Fyresite/formler#readme",
-  "dependencies": {
-    "lodash.clonedeep": "^4.5.0",
-    "uuid": "^7.0.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/preset-env": "^7.8.4",
-    "@babel/preset-react": "^7.8.3",
-    "babel-loader": "^8.0.6",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
-  },
-  "peerDependencies": {
-    "react": "^16.12.0"
-  }
+    "name": "shlorm",
+    "version": "0.0.1",
+    "description": "React form library",
+    "main": "./build/index.js",
+    "scripts": {
+        "build": "webpack",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Fyresite/shlorm.git"
+    },
+    "keywords": [
+        "React",
+        "Form",
+        "Library"
+    ],
+    "author": "Stephen Orr",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Fyresite/shlorm/issues"
+    },
+    "homepage": "https://github.com/Fyresite/shlorm#readme",
+    "dependencies": {
+        "lodash.clonedeep": "^4.5.0",
+        "uuid": "^7.0.1"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.8.4",
+        "@babel/plugin-proposal-class-properties": "^7.8.3",
+        "@babel/preset-env": "^7.8.4",
+        "@babel/preset-react": "^7.8.3",
+        "babel-loader": "^8.0.6",
+        "webpack": "^4.41.6",
+        "webpack-cli": "^3.3.11"
+    },
+    "peerDependencies": {
+        "react": "^16.12.0"
+    }
 }
