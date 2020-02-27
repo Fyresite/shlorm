@@ -1,5 +1,5 @@
 {
-    "name": "shlorm",
+    "name": "@fyresite/shlorm",
     "version": "0.0.1",
     "description": "React form library",
     "main": "./build/index.js",
