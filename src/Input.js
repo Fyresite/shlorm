@@ -8,14 +8,7 @@ class Input extends React.Component {
     }
 
     render() {
-        const {
-            // "shlorm-input": shlorm,
-            type = "text",
-            validator,
-            ...rest
-        } = this.props;
-
-        console.log(rest);
+        const { type = "text", validator, ...rest } = this.props;
 
         return <input type={type} ref="input" {...rest} />;
     }

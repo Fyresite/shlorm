@@ -16,10 +16,6 @@ const shlormify = InputComponent => {
         }
     }
 
-    // WithShlorm.defaultProps = {
-    //     "shlorm-input": true
-    // };
-
     const forwardRef = (props, ref) => (
         <WithShlorm {...props} forwardedRef={ref} />
     );

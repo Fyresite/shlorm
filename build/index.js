@@ -2116,8 +2116,77 @@ function (_React$Component) {
 
 
 /* harmony default export */ var src_Input = (src_shlormify(Input_Input));
+// CONCATENATED MODULE: ./src/Select.js
+function Select_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { Select_typeof = function _typeof(obj) { return typeof obj; }; } else { Select_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return Select_typeof(obj); }
+
+function Select_extends() { Select_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return Select_extends.apply(this, arguments); }
+
+function Select_objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = Select_objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function Select_objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+function Select_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Select_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Select_createClass(Constructor, protoProps, staticProps) { if (protoProps) Select_defineProperties(Constructor.prototype, protoProps); if (staticProps) Select_defineProperties(Constructor, staticProps); return Constructor; }
+
+function Select_possibleConstructorReturn(self, call) { if (call && (Select_typeof(call) === "object" || typeof call === "function")) { return call; } return Select_assertThisInitialized(self); }
+
+function Select_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function Select_getPrototypeOf(o) { Select_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return Select_getPrototypeOf(o); }
+
+function Select_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) Select_setPrototypeOf(subClass, superClass); }
+
+function Select_setPrototypeOf(o, p) { Select_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return Select_setPrototypeOf(o, p); }
+
+
+
+
+var Select_Select =
+/*#__PURE__*/
+function (_React$Component) {
+  Select_inherits(Select, _React$Component);
+
+  function Select(props) {
+    Select_classCallCheck(this, Select);
+
+    return Select_possibleConstructorReturn(this, Select_getPrototypeOf(Select).call(this, props));
+  }
+
+  Select_createClass(Select, [{
+    key: "render",
+    value: function render() {
+      var _this$props = this.props,
+          name = _this$props.name,
+          validator = _this$props.validator,
+          _this$props$options = _this$props.options,
+          options = _this$props$options === void 0 ? [] : _this$props$options,
+          rest = Select_objectWithoutProperties(_this$props, ["name", "validator", "options"]);
+
+      console.log(rest);
+      return external_react_default.a.createElement("select", Select_extends({
+        ref: "input",
+        name: name
+      }, rest), options.map(function (_ref, index) {
+        var value = _ref.value,
+            text = _ref.text;
+        return external_react_default.a.createElement("option", {
+          value: value,
+          key: "".concat(name, "-").concat(index)
+        }, text);
+      }));
+    }
+  }]);
+
+  return Select;
+}(external_react_default.a.Component);
+
+/* harmony default export */ var src_Select = (src_shlormify(Select_Select));
 // CONCATENATED MODULE: ./src/index.js
 /* concated harmony reexport Input */__webpack_require__.d(__webpack_exports__, "Input", function() { return src_Input; });
+/* concated harmony reexport Select */__webpack_require__.d(__webpack_exports__, "Select", function() { return src_Select; });
 /* concated harmony reexport shlormify */__webpack_require__.d(__webpack_exports__, "shlormify", function() { return src_shlormify; });
 function src_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { src_typeof = function _typeof(obj) { return typeof obj; }; } else { src_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return src_typeof(obj); }
 
@@ -2146,6 +2215,7 @@ function src_getPrototypeOf(o) { src_getPrototypeOf = Object.setPrototypeOf ? Ob
 function src_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) src_setPrototypeOf(subClass, superClass); }
 
 function src_setPrototypeOf(o, p) { src_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return src_setPrototypeOf(o, p); }
+
 
 
 

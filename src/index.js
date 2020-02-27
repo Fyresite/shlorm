@@ -5,6 +5,7 @@ import cloneDeep from "lodash.clonedeep";
 import shlormify from "./shlormify";
 
 import Input from "./Input";
+import Select from "./Select";
 
 class Shlorm extends React.Component {
     constructor(props) {
@@ -56,8 +57,6 @@ class Shlorm extends React.Component {
         if (!this.props.children) return [];
 
         const children = React.Children.map(this.props.children, _child => {
-            console.log("_child", _child);
-
             // Remove shlorm boolean tags so we don't get any warnings
             let { props: _props, ...child } = _child;
 
@@ -74,8 +73,6 @@ class Shlorm extends React.Component {
 
             const input = _child.type.render && _child.type.render.shlormInput;
 
-            console.log("input", input);
-
             if (input) {
                 this.form.refs[name] = React.createRef();
 
@@ -89,7 +86,6 @@ class Shlorm extends React.Component {
             }
 
             return React.createElement(child.type, props);
-            // return React.cloneElement(child, props);
         });
 
         return children;
@@ -116,12 +112,8 @@ class Shlorm extends React.Component {
         Object.keys(refs).forEach(key => {
             const { current } = refs[key];
 
-            console.log("current", current);
-
             if (current.props && current.props.validator) {
                 let valid = current.props.validator(state[key].value);
-
-                console.log("valid", valid);
 
                 state[key].valid = valid;
 
@@ -173,6 +165,6 @@ class Shlorm extends React.Component {
 
 Shlorm.displayName = "Shlorm";
 
-export { Input, shlormify };
+export { Input, Select, shlormify };
 
 export default Shlorm;
