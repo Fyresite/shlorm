@@ -1,7 +1,5 @@
 import React from "react";
 
-import shlormify from "./shlormify";
-
 class Input extends React.Component {
     constructor(props) {
         super(props);
@@ -14,6 +12,6 @@ class Input extends React.Component {
     }
 }
 
-// Input.displayName = "Input";
+Input.shlormInput = true;
 
-export default shlormify(Input);
+export default Input;

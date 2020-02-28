@@ -1,7 +1,5 @@
 import React from "react";
 
-import shlormify from "./shlormify";
-
 class Select extends React.Component {
     constructor(props) {
         super(props);
@@ -22,4 +20,6 @@ class Select extends React.Component {
     }
 }
 
-export default shlormify(Select);
+Select.shlormInput = true;
+
+export default Select;

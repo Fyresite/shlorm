@@ -2,8 +2,6 @@ import React from "react";
 import { v4 as uuid } from "uuid";
 import cloneDeep from "lodash.clonedeep";
 
-import shlormify from "./shlormify";
-
 import Input from "./Input";
 import Select from "./Select";
 
@@ -16,7 +14,7 @@ class Shlorm extends React.Component {
         // Create state from children
         if (props.children) {
             React.Children.forEach(props.children, ({ props, ...child }) => {
-                if (child.type.render && child.type.render.shlormInput) {
+                if (child.type.shlormInput || props["shlorm-input"]) {
                     state[props.name] = {
                         value: props.value || "",
                         valid: true
@@ -61,7 +59,7 @@ class Shlorm extends React.Component {
             let { props: _props, ...child } = _child;
 
             let {
-                // "shlorm-input": input,
+                "shlorm-input": input,
                 "shlorm-submit": submit,
                 ...props
             } = _props;
@@ -71,7 +69,7 @@ class Shlorm extends React.Component {
 
             props.key = name ? `shlorm-input-${name}` : uuid();
 
-            const input = _child.type.render && _child.type.render.shlormInput;
+            if (!input) input = _child.type.shlormInput;
 
             if (input) {
                 this.form.refs[name] = React.createRef();
@@ -165,6 +163,6 @@ class Shlorm extends React.Component {
 
 Shlorm.displayName = "Shlorm";
 
-export { Input, Select, shlormify };
+export { Input, Select };
 
 export default Shlorm;
