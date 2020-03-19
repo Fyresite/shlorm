@@ -6,7 +6,7 @@ class Input extends React.Component {
     }
 
     render() {
-        const { type = "text", validator, ...rest } = this.props;
+        const { type = "text", valid, validator, ...rest } = this.props;
 
         return <input type={type} ref="input" {...rest} />;
     }

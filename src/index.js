@@ -98,7 +98,7 @@ class Shlorm extends React.Component {
                 //         props.value = _child.props.options[0].value;
                 //     }
                 // }
-                // props = { ...props, ...state[name] }; // add value and valid to child
+                props = { ...props, ...state[name] }; // add value and valid to child
 
                 if (type === "submit") {
                     props.onClick = this.handleSubmit.bind(this);

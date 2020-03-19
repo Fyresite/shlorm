@@ -2022,8 +2022,9 @@ function (_React$Component) {
       var _this$props = this.props,
           _this$props$type = _this$props.type,
           type = _this$props$type === void 0 ? "text" : _this$props$type,
+          valid = _this$props.valid,
           validator = _this$props.validator,
-          rest = _objectWithoutProperties(_this$props, ["type", "validator"]);
+          rest = _objectWithoutProperties(_this$props, ["type", "valid", "validator"]);
 
       return external_react_default.a.createElement("input", _extends({
         type: type,
@@ -2080,10 +2081,11 @@ function (_React$Component) {
     value: function render() {
       var _this$props = this.props,
           name = _this$props.name,
+          valid = _this$props.valid,
           validator = _this$props.validator,
           _this$props$options = _this$props.options,
           options = _this$props$options === void 0 ? [] : _this$props$options,
-          rest = Select_objectWithoutProperties(_this$props, ["name", "validator", "options"]);
+          rest = Select_objectWithoutProperties(_this$props, ["name", "valid", "validator", "options"]);
 
       return external_react_default.a.createElement("select", Select_extends({
         ref: "input",
@@ -2244,7 +2246,8 @@ function (_React$Component) {
           //         props.value = _child.props.options[0].value;
           //     }
           // }
-          // props = { ...props, ...state[name] }; // add value and valid to child
+
+          props = _objectSpread({}, props, {}, state[name]); // add value and valid to child
 
           if (type === "submit") {
             props.onClick = _this3.handleSubmit.bind(_this3);

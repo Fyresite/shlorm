@@ -6,7 +6,7 @@ class Select extends React.Component {
     }
 
     render() {
-        const { name, validator, options = [], ...rest } = this.props;
+        const { name, valid, validator, options = [], ...rest } = this.props;
 
         return (
             <select ref="input" name={name} {...rest}>
