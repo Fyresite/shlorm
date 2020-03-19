@@ -2237,19 +2237,14 @@ function (_React$Component) {
         if (type) {
           _this3.form.refs[name] = external_react_default.a.createRef();
           props.ref = _this3.form.refs[name];
-          props.onChange = _this3.handleChange.bind(_this3, name);
-
-          if (type === 'select') {
-            // If a select isn't set with a value, we need to add it to the props so that
-            // it can be picked up by the handleSubmit method
-            if (!_child.props.value) {
-              console.log(_child.props.options[0].value);
-              props.value = _child.props.options[0].value;
-              console.log(props);
-              console.log(child.type);
-            }
-          } // props = { ...props, ...state[name] }; // add value and valid to child
-
+          props.onChange = _this3.handleChange.bind(_this3, name); // if (type === 'select') {
+          //     // If a select isn't set with a value, we need to add it to the props so that
+          //     // it can be picked up by the handleSubmit method
+          //     if (!_child.props.value) {
+          //         props.value = _child.props.options[0].value;
+          //     }
+          // }
+          // props = { ...props, ...state[name] }; // add value and valid to child
 
           if (type === "submit") {
             props.onClick = _this3.handleSubmit.bind(_this3);
@@ -2257,19 +2252,7 @@ function (_React$Component) {
         }
 
         return external_react_default.a.createElement(child.type, props);
-      }); // console.log(this.form.refs);
-      // for (const key in this.form.refs) {
-      //     if (this.form.refs.hasOwnProperty(key)) {
-      //         console.log(this.form.refs[key]);
-      //     }
-      // }
-      // Object.keys(this.form.refs).forEach(key => {
-      //     console.log(this.form.refs[key]);
-      //     console.log(key);
-      //     // const ref = this.form.refs[key];
-      //     // console.log(ref.current.refs.input);
-      // })
-
+      });
       return children;
     }
   }, {

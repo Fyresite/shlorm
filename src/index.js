@@ -91,18 +91,13 @@ class Shlorm extends React.Component {
                 props.ref = this.form.refs[name];
                 props.onChange = this.handleChange.bind(this, name);
                 
-                if (type === 'select') {
-                    // If a select isn't set with a value, we need to add it to the props so that
-                    // it can be picked up by the handleSubmit method
-                    if (!_child.props.value) {
-                        console.log(_child.props.options[0].value);
-                        props.value = _child.props.options[0].value;
-                        console.log(props);
-                        console.log(child.type);
-
-                        
-                    }
-                }
+                // if (type === 'select') {
+                //     // If a select isn't set with a value, we need to add it to the props so that
+                //     // it can be picked up by the handleSubmit method
+                //     if (!_child.props.value) {
+                //         props.value = _child.props.options[0].value;
+                //     }
+                // }
                 // props = { ...props, ...state[name] }; // add value and valid to child
 
                 if (type === "submit") {
@@ -112,23 +107,6 @@ class Shlorm extends React.Component {
 
             return React.createElement(child.type, props);
         });
-
-        // console.log(this.form.refs);
-        
-        // for (const key in this.form.refs) {
-        //     if (this.form.refs.hasOwnProperty(key)) {
-                
-        //         console.log(this.form.refs[key]);
-        //     }
-        // }
-
-        // Object.keys(this.form.refs).forEach(key => {
-        //     console.log(this.form.refs[key]);
-        //     console.log(key);
-        //     // const ref = this.form.refs[key];
-
-        //     // console.log(ref.current.refs.input);
-        // })
 
         return children;
     }
