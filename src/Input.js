@@ -12,6 +12,6 @@ class Input extends React.Component {
     }
 }
 
-Input.shlormInput = true;
+Input.shlormType = 'input';
 
 export default Input;

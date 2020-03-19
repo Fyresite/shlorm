@@ -2035,7 +2035,7 @@ function (_React$Component) {
   return Input;
 }(external_react_default.a.Component);
 
-Input_Input.shlormInput = true;
+Input_Input.shlormType = 'input';
 /* harmony default export */ var src_Input = (Input_Input);
 // CONCATENATED MODULE: ./src/Select.js
 function Select_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { Select_typeof = function _typeof(obj) { return typeof obj; }; } else { Select_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return Select_typeof(obj); }
@@ -2102,7 +2102,7 @@ function (_React$Component) {
   return Select;
 }(external_react_default.a.Component);
 
-Select_Select.shlormInput = true;
+Select_Select.shlormType = 'select';
 /* harmony default export */ var src_Select = (Select_Select);
 // CONCATENATED MODULE: ./src/index.js
 /* concated harmony reexport Input */__webpack_require__.d(__webpack_exports__, "Input", function() { return src_Input; });
@@ -2157,13 +2157,12 @@ function (_React$Component) {
     }; // Create state from children
 
     if (props.children) {
-      external_react_default.a.Children.forEach(props.children, function (_ref) {
-        var props = _ref.props,
-            child = src_objectWithoutProperties(_ref, ["props"]);
+      external_react_default.a.Children.forEach(props.children, function (child) {
+        if (child.type.shlormType || child.props["shlorm-type"]) {
+          var value = _this.getChildValue(child);
 
-        if (child.type.shlormInput || props["shlorm-input"]) {
-          state[props.name] = {
-            value: props.value || "",
+          state[child.props.name] = {
+            value: value,
             valid: true
           };
         }
@@ -2184,11 +2183,22 @@ function (_React$Component) {
       // Makes sure this component never updates, which increases performance by stopping
       // unnecessary re-renders. We do want a re-render on submit though.
       if (this.state.submitted !== nextState.submitted) {
-        // this.children = this.updateChildren(nextState);
         return true;
       }
 
       return false;
+    }
+  }, {
+    key: "getChildValue",
+    value: function getChildValue(child) {
+      if (child.props.value) return child.props.value;
+      var type = child.type.shlormType || child.props['shlorm-type'];
+
+      if (type === 'select') {
+        return child.props.options[0].value;
+      }
+
+      return "";
     }
   }, {
     key: "getForm",
@@ -2212,30 +2222,54 @@ function (_React$Component) {
         var _props = _child.props,
             child = src_objectWithoutProperties(_child, ["props"]);
 
-        var input = _props["shlorm-input"],
+        var type = _props["shlorm-type"],
             submit = _props["shlorm-submit"],
-            props = src_objectWithoutProperties(_props, ["shlorm-input", "shlorm-submit"]);
+            props = src_objectWithoutProperties(_props, ["shlorm-type", "shlorm-submit"]);
 
         child = _objectSpread({
           props: props
         }, child);
         var name = child.props.name;
-        props.key = name ? "shlorm-input-".concat(name) : esm_browser_v4();
-        if (!input) input = _child.type.shlormInput;
+        props.key = name ? "shlorm-input-".concat(name) : esm_browser_v4(); // If type is not defined here, we check the 'shlormType' property on the component instance itself
 
-        if (input) {
+        if (!type) type = _child.type.shlormType;
+
+        if (type) {
           _this3.form.refs[name] = external_react_default.a.createRef();
           props.ref = _this3.form.refs[name];
           props.onChange = _this3.handleChange.bind(_this3, name);
-          props = _objectSpread({}, props, {}, state[name]); // add value and valid to child
-        }
 
-        if (submit) {
-          props.onClick = _this3.handleSubmit.bind(_this3);
+          if (type === 'select') {
+            // If a select isn't set with a value, we need to add it to the props so that
+            // it can be picked up by the handleSubmit method
+            if (!_child.props.value) {
+              console.log(_child.props.options[0].value);
+              props.value = _child.props.options[0].value;
+              console.log(props);
+              console.log(child.type);
+            }
+          } // props = { ...props, ...state[name] }; // add value and valid to child
+
+
+          if (type === "submit") {
+            props.onClick = _this3.handleSubmit.bind(_this3);
+          }
         }
 
         return external_react_default.a.createElement(child.type, props);
-      });
+      }); // console.log(this.form.refs);
+      // for (const key in this.form.refs) {
+      //     if (this.form.refs.hasOwnProperty(key)) {
+      //         console.log(this.form.refs[key]);
+      //     }
+      // }
+      // Object.keys(this.form.refs).forEach(key => {
+      //     console.log(this.form.refs[key]);
+      //     console.log(key);
+      //     // const ref = this.form.refs[key];
+      //     // console.log(ref.current.refs.input);
+      // })
+
       return children;
     }
   }, {
@@ -2244,7 +2278,8 @@ function (_React$Component) {
       this.setState(_defineProperty({}, field, {
         value: e.target.value,
         valid: true
-      }));
+      })); // console.log(this.form.refs[field].current);
+      // this.form.refs[field].current.props.value = e.target.value;
     }
   }, {
     key: "handleSubmit",
@@ -2256,8 +2291,10 @@ function (_React$Component) {
       var state = lodash_clonedeep_default()(this.state);
       var invalid = [];
       var focused = false;
+      console.log(state);
       Object.keys(refs).forEach(function (key) {
         var current = refs[key].current;
+        console.log(current);
 
         if (current.props && current.props.validator) {
           var valid = current.props.validator(state[key].value);

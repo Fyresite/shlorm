@@ -13,10 +13,12 @@ class Shlorm extends React.Component {
 
         // Create state from children
         if (props.children) {
-            React.Children.forEach(props.children, ({ props, ...child }) => {
-                if (child.type.shlormInput || props["shlorm-input"]) {
-                    state[props.name] = {
-                        value: props.value || "",
+            React.Children.forEach(props.children, (child) => {
+                if (child.type.shlormType || child.props["shlorm-type"]) {
+                    const value = this.getChildValue(child);
+
+                    state[child.props.name] = {
+                        value,
                         valid: true
                     };
                 }
@@ -34,11 +36,22 @@ class Shlorm extends React.Component {
         // Makes sure this component never updates, which increases performance by stopping
         // unnecessary re-renders. We do want a re-render on submit though.
         if (this.state.submitted !== nextState.submitted) {
-            // this.children = this.updateChildren(nextState);
             return true;
         }
 
         return false;
+    }
+
+    getChildValue(child) {
+        if (child.props.value) return child.props.value;
+        
+        const type = child.type.shlormType || child.props['shlorm-type'];
+
+        if (type === 'select') {
+            return child.props.options[0].value;
+        }
+
+        return "";
     }
 
     getForm() {
@@ -59,7 +72,7 @@ class Shlorm extends React.Component {
             let { props: _props, ...child } = _child;
 
             let {
-                "shlorm-input": input,
+                "shlorm-type": type,
                 "shlorm-submit": submit,
                 ...props
             } = _props;
@@ -69,22 +82,53 @@ class Shlorm extends React.Component {
 
             props.key = name ? `shlorm-input-${name}` : uuid();
 
-            if (!input) input = _child.type.shlormInput;
+            // If type is not defined here, we check the 'shlormType' property on the component instance itself
+            if (!type) type = _child.type.shlormType;
 
-            if (input) {
+            if (type) {
                 this.form.refs[name] = React.createRef();
 
                 props.ref = this.form.refs[name];
                 props.onChange = this.handleChange.bind(this, name);
-                props = { ...props, ...state[name] }; // add value and valid to child
-            }
+                
+                if (type === 'select') {
+                    // If a select isn't set with a value, we need to add it to the props so that
+                    // it can be picked up by the handleSubmit method
+                    if (!_child.props.value) {
+                        console.log(_child.props.options[0].value);
+                        props.value = _child.props.options[0].value;
+                        console.log(props);
+                        console.log(child.type);
 
-            if (submit) {
-                props.onClick = this.handleSubmit.bind(this);
+                        
+                    }
+                }
+                // props = { ...props, ...state[name] }; // add value and valid to child
+
+                if (type === "submit") {
+                    props.onClick = this.handleSubmit.bind(this);
+                }
             }
 
             return React.createElement(child.type, props);
         });
+
+        // console.log(this.form.refs);
+        
+        // for (const key in this.form.refs) {
+        //     if (this.form.refs.hasOwnProperty(key)) {
+                
+        //         console.log(this.form.refs[key]);
+        //     }
+        // }
+
+        // Object.keys(this.form.refs).forEach(key => {
+        //     console.log(this.form.refs[key]);
+        //     console.log(key);
+        //     // const ref = this.form.refs[key];
+
+        //     // console.log(ref.current.refs.input);
+        // })
 
         return children;
     }
@@ -96,6 +140,9 @@ class Shlorm extends React.Component {
                 valid: true
             }
         });
+
+        // console.log(this.form.refs[field].current);
+        // this.form.refs[field].current.props.value = e.target.value;
     }
 
     handleSubmit(e) {
@@ -107,8 +154,12 @@ class Shlorm extends React.Component {
         let invalid = [];
         let focused = false;
 
+        console.log(state);
+
         Object.keys(refs).forEach(key => {
             const { current } = refs[key];
+
+            console.log(current);
 
             if (current.props && current.props.validator) {
                 let valid = current.props.validator(state[key].value);
