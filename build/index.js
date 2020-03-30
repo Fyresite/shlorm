@@ -2177,20 +2177,18 @@ function (_React$Component) {
     };
     _this.children = [];
     return _this;
-  }
+  } // TODO: Fix this so that components that aren't part of the form can still re-render
+  // shouldComponentUpdate(_, nextState) {
+  //     // Makes sure this component never updates, which increases performance by stopping
+  //     // unnecessary re-renders. We do want a re-render on submit though.
+  //     if (this.state.submitted !== nextState.submitted) {
+  //         return true;
+  //     }
+  //     return false;
+  // }
+
 
   src_createClass(Shlorm, [{
-    key: "shouldComponentUpdate",
-    value: function shouldComponentUpdate(_, nextState) {
-      // Makes sure this component never updates, which increases performance by stopping
-      // unnecessary re-renders. We do want a re-render on submit though.
-      if (this.state.submitted !== nextState.submitted) {
-        return true;
-      }
-
-      return false;
-    }
-  }, {
     key: "getChildValue",
     value: function getChildValue(child) {
       // console.log(child);
@@ -2267,7 +2265,7 @@ function (_React$Component) {
   }, {
     key: "handleChange",
     value: function handleChange(field, e) {
-      console.log('handleChange');
+      console.log("handleChange");
       console.log(field);
       console.log(e);
       this.setState(_defineProperty({}, field, {
