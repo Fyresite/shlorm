@@ -13,7 +13,7 @@ class Shlorm extends React.Component {
 
         // Create state from children
         if (props.children) {
-            React.Children.forEach(props.children, (child) => {
+            React.Children.forEach(props.children, child => {
                 if (child.type.shlormType || child.props["shlorm-type"]) {
                     const value = this.getChildValue(child);
 
@@ -32,22 +32,29 @@ class Shlorm extends React.Component {
         this.children = [];
     }
 
-    shouldComponentUpdate(_, nextState) {
-        // Makes sure this component never updates, which increases performance by stopping
-        // unnecessary re-renders. We do want a re-render on submit though.
-        if (this.state.submitted !== nextState.submitted) {
-            return true;
-        }
+    // TODO: Fix this so that components that aren't part of the form can still re-render
+    // shouldComponentUpdate(_, nextState) {
 
-        return false;
-    }
+    //     // Makes sure this component never updates, which increases performance by stopping
+    //     // unnecessary re-renders. We do want a re-render on submit though.
+    //     if (this.state.submitted !== nextState.submitted) {
+    //         return true;
+    //     }
+
+    //     return false;
+    // }
 
     getChildValue(child) {
+        // console.log(child);
         if (child.props.value) return child.props.value;
-        
-        const type = child.type.shlormType || child.props['shlorm-type'];
 
-        if (type === 'select') {
+        const type = child.type.shlormType || child.props["shlorm-type"];
+
+        if (type === "select") {
+            if (child.props.placeholder) {
+                return "";
+            }
+
             return child.props.options[0].value;
         }
 
@@ -90,7 +97,7 @@ class Shlorm extends React.Component {
 
                 props.ref = this.form.refs[name];
                 props.onChange = this.handleChange.bind(this, name);
-                
+
                 // if (type === 'select') {
                 //     // If a select isn't set with a value, we need to add it to the props so that
                 //     // it can be picked up by the handleSubmit method
@@ -105,6 +112,8 @@ class Shlorm extends React.Component {
                 }
             }
 
+            console.log(props);
+
             return React.createElement(child.type, props);
         });
 
@@ -112,6 +121,9 @@ class Shlorm extends React.Component {
     }
 
     handleChange(field, e) {
+        console.log("handleChange");
+        console.log(field);
+        console.log(e);
         this.setState({
             [field]: {
                 value: e.target.value,

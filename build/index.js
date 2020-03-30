@@ -2193,10 +2193,15 @@ function (_React$Component) {
   }, {
     key: "getChildValue",
     value: function getChildValue(child) {
+      // console.log(child);
       if (child.props.value) return child.props.value;
-      var type = child.type.shlormType || child.props['shlorm-type'];
+      var type = child.type.shlormType || child.props["shlorm-type"];
 
-      if (type === 'select') {
+      if (type === "select") {
+        if (child.props.placeholder) {
+          return "";
+        }
+
         return child.props.options[0].value;
       }
 
@@ -2254,6 +2259,7 @@ function (_React$Component) {
           }
         }
 
+        console.log(props);
         return external_react_default.a.createElement(child.type, props);
       });
       return children;
@@ -2261,6 +2267,9 @@ function (_React$Component) {
   }, {
     key: "handleChange",
     value: function handleChange(field, e) {
+      console.log('handleChange');
+      console.log(field);
+      console.log(e);
       this.setState(_defineProperty({}, field, {
         value: e.target.value,
         valid: true
