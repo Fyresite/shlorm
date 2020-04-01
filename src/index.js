@@ -188,12 +188,14 @@ class Shlorm extends React.Component {
     }
 
     render() {
+        const { style, ...rest } = this.props;
         this.children = this.updateChildren(this.state);
 
         return (
             <form
                 onSubmit={this.handleSubmit.bind(this)}
-                style={{ display: "flex", flexDirection: "column" }}
+                style={{ display: "flex", flexDirection: "column", ...style }}
+                {...rest}
             >
                 {this.children}
                 <input type="submit" style={{ display: "none" }} />

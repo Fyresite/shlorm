@@ -2111,6 +2111,8 @@ Select_Select.shlormType = 'select';
 /* concated harmony reexport Select */__webpack_require__.d(__webpack_exports__, "Select", function() { return src_Select; });
 function src_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { src_typeof = function _typeof(obj) { return typeof obj; }; } else { src_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return src_typeof(obj); }
 
+function src_extends() { src_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return src_extends.apply(this, arguments); }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -2322,14 +2324,18 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this$props = this.props,
+          style = _this$props.style,
+          rest = src_objectWithoutProperties(_this$props, ["style"]);
+
       this.children = this.updateChildren(this.state);
-      return external_react_default.a.createElement("form", {
+      return external_react_default.a.createElement("form", src_extends({
         onSubmit: this.handleSubmit.bind(this),
-        style: {
+        style: _objectSpread({
           display: "flex",
           flexDirection: "column"
-        }
-      }, this.children, external_react_default.a.createElement("input", {
+        }, style)
+      }, rest), this.children, external_react_default.a.createElement("input", {
         type: "submit",
         style: {
           display: "none"
