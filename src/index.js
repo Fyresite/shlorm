@@ -112,8 +112,6 @@ class Shlorm extends React.Component {
                 }
             }
 
-            console.log(props);
-
             return React.createElement(child.type, props);
         });
 

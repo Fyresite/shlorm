@@ -2259,7 +2259,6 @@ function (_React$Component) {
           }
         }
 
-        console.log(props);
         return external_react_default.a.createElement(child.type, props);
       });
       return children;
