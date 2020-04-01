@@ -2267,9 +2267,6 @@ function (_React$Component) {
   }, {
     key: "handleChange",
     value: function handleChange(field, e) {
-      console.log("handleChange");
-      console.log(field);
-      console.log(e);
       this.setState(_defineProperty({}, field, {
         value: e.target.value,
         valid: true
@@ -2286,10 +2283,8 @@ function (_React$Component) {
       var state = lodash_clonedeep_default()(this.state);
       var invalid = [];
       var focused = false;
-      console.log(state);
       Object.keys(refs).forEach(function (key) {
         var current = refs[key].current;
-        console.log(current);
 
         if (current.props && current.props.validator) {
           var valid = current.props.validator(state[key].value);
