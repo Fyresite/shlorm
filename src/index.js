@@ -121,9 +121,6 @@ class Shlorm extends React.Component {
     }
 
     handleChange(field, e) {
-        console.log("handleChange");
-        console.log(field);
-        console.log(e);
         this.setState({
             [field]: {
                 value: e.target.value,
@@ -144,12 +141,8 @@ class Shlorm extends React.Component {
         let invalid = [];
         let focused = false;
 
-        console.log(state);
-
         Object.keys(refs).forEach(key => {
             const { current } = refs[key];
-
-            console.log(current);
 
             if (current.props && current.props.validator) {
                 let valid = current.props.validator(state[key].value);
