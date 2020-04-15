@@ -2198,7 +2198,6 @@ function (_React$Component) {
   src_createClass(Shlorm, [{
     key: "getChildValue",
     value: function getChildValue(child) {
-      // console.log(child);
       if (child.props.value) return child.props.value;
       var type = child.type.shlormType || child.props["shlorm-type"];
 

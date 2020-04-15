@@ -52,7 +52,6 @@ class Shlorm extends React.Component {
     // }
 
     getChildValue(child) {
-        // console.log(child);
         if (child.props.value) return child.props.value;
 
         const type = child.type.shlormType || child.props["shlorm-type"];
