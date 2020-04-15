@@ -2252,10 +2252,11 @@ function (_React$Component) {
           //     }
           // }
 
-          props = _objectSpread({}, props, {}, state[name]); // add value and valid to child
-
           if (type === "submit") {
             props.onClick = _this3.handleSubmit.bind(_this3);
+          } else {
+            // If type is not a submit button
+            props = _objectSpread({}, props, {}, state[name]); // add value and valid to child
           }
         }
 

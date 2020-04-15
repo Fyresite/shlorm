@@ -13,13 +13,13 @@ class Shlorm extends React.Component {
 
         // Create state from children
         if (props.children) {
-            React.Children.forEach(props.children, child => {
+            React.Children.forEach(props.children, (child) => {
                 if (child.type.shlormType || child.props["shlorm-type"]) {
                     const value = this.getChildValue(child);
 
                     state[child.props.name] = {
                         value,
-                        valid: true
+                        valid: true,
                     };
                 }
             });
@@ -64,7 +64,7 @@ class Shlorm extends React.Component {
     getForm() {
         const form = {};
 
-        Object.keys(this.state).forEach(key => {
+        Object.keys(this.state).forEach((key) => {
             if (key !== "submitted") form[key] = this.state[key].value;
         });
 
@@ -74,7 +74,7 @@ class Shlorm extends React.Component {
     updateChildren(state) {
         if (!this.props.children) return [];
 
-        const children = React.Children.map(this.props.children, _child => {
+        const children = React.Children.map(this.props.children, (_child) => {
             // Remove shlorm boolean tags so we don't get any warnings
             let { props: _props, ...child } = _child;
 
@@ -105,10 +105,12 @@ class Shlorm extends React.Component {
                 //         props.value = _child.props.options[0].value;
                 //     }
                 // }
-                props = { ...props, ...state[name] }; // add value and valid to child
 
                 if (type === "submit") {
                     props.onClick = this.handleSubmit.bind(this);
+                } else {
+                    // If type is not a submit button
+                    props = { ...props, ...state[name] }; // add value and valid to child
                 }
             }
 
@@ -122,8 +124,8 @@ class Shlorm extends React.Component {
         this.setState({
             [field]: {
                 value: e.target.value,
-                valid: true
-            }
+                valid: true,
+            },
         });
 
         // console.log(this.form.refs[field].current);
@@ -139,7 +141,7 @@ class Shlorm extends React.Component {
         let invalid = [];
         let focused = false;
 
-        Object.keys(refs).forEach(key => {
+        Object.keys(refs).forEach((key) => {
             const { current } = refs[key];
 
             if (current.props && current.props.validator) {
@@ -152,10 +154,10 @@ class Shlorm extends React.Component {
                         field: key,
                         message:
                             current.props.errorMessage || `${key} is invalid`,
-                        ref: current
+                        ref: current,
                     });
 
-                    Object.keys(current.refs).forEach(key => {
+                    Object.keys(current.refs).forEach((key) => {
                         const ref = current.refs[key];
 
                         if (ref.focus && !focused) {
