@@ -2165,10 +2165,14 @@ function (_React$Component) {
         if (child.type.shlormType || child.props["shlorm-type"]) {
           var value = _this.getChildValue(child);
 
+          var type = child.type.shlormType;
+          if (!type) type = child.props["shlorm-type"]; // Only track the state of certain shlorm types
+          // if (!["submit"].includes(type)) {
+
           state[child.props.name] = {
             value: value,
             valid: true
-          };
+          }; // }
         }
       });
     }

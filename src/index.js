@@ -17,10 +17,17 @@ class Shlorm extends React.Component {
                 if (child.type.shlormType || child.props["shlorm-type"]) {
                     const value = this.getChildValue(child);
 
-                    state[child.props.name] = {
-                        value,
-                        valid: true,
-                    };
+                    let type = child.type.shlormType;
+
+                    if (!type) type = child.props["shlorm-type"];
+
+                    // Only track the state of certain shlorm types
+                    if (!["submit"].includes(type)) {
+                        state[child.props.name] = {
+                            value,
+                            valid: true,
+                        };
+                    }
                 }
             });
         }
