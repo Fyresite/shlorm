@@ -2167,12 +2167,13 @@ function (_React$Component) {
 
           var type = child.type.shlormType;
           if (!type) type = child.props["shlorm-type"]; // Only track the state of certain shlorm types
-          // if (!["submit"].includes(type)) {
 
-          state[child.props.name] = {
-            value: value,
-            valid: true
-          }; // }
+          if (!["submit"].includes(type)) {
+            state[child.props.name] = {
+              value: value,
+              valid: true
+            };
+          }
         }
       });
     }
