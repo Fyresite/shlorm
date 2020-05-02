@@ -2248,6 +2248,14 @@ function (_React$Component) {
         if (type) {
           if (type !== "submit") {
             _this3.form.refs[name] = external_react_default.a.createRef();
+
+            props.onKeyPress = function (e) {
+              if (e.charCode === 13) {
+                // Enter key
+                // this.refs.form.submit();
+                _this3.handleSubmit(e);
+              }
+            };
           }
 
           props.ref = _this3.form.refs[name];
@@ -2295,6 +2303,7 @@ function (_React$Component) {
     value: function handleSubmit(e) {
       var _this4 = this;
 
+      console.log("here");
       e.preventDefault();
       var refs = this.form.refs;
       var state = lodash_clonedeep_default()(this.state);
@@ -2358,12 +2367,7 @@ function (_React$Component) {
           display: "flex",
           flexDirection: "column"
         }, style)
-      }, rest), this.children, external_react_default.a.createElement("input", {
-        type: "submit",
-        style: {
-          display: "none"
-        }
-      }));
+      }, rest), this.children);
     }
   }]);
 

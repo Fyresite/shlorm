@@ -101,6 +101,13 @@ class Shlorm extends React.Component {
             if (type) {
                 if (type !== "submit") {
                     this.form.refs[name] = React.createRef();
+                    props.onKeyPress = (e) => {
+                        if (e.charCode === 13) {
+                            // Enter key
+                            // this.refs.form.submit();
+                            this.handleSubmit(e);
+                        }
+                    };
                 }
 
                 props.ref = this.form.refs[name];
@@ -219,7 +226,6 @@ class Shlorm extends React.Component {
                 {...rest}
             >
                 {this.children}
-                <input type="submit" style={{ display: "none" }} />
             </form>
         );
     }
