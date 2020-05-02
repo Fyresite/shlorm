@@ -99,18 +99,20 @@ class Shlorm extends React.Component {
             if (!type) type = _child.type.shlormType;
 
             if (type) {
-                this.form.refs[name] = React.createRef();
+                if (type !== "submit") {
+                    this.form.refs[name] = React.createRef();
+                }
 
                 props.ref = this.form.refs[name];
-                props.onChange = this.handleChange.bind(this, name);
-
-                // if (type === 'select') {
-                //     // If a select isn't set with a value, we need to add it to the props so that
-                //     // it can be picked up by the handleSubmit method
-                //     if (!_child.props.value) {
-                //         props.value = _child.props.options[0].value;
-                //     }
-                // }
+                if (type === "select") {
+                    props.onChange = this.handleSelectChange.bind(
+                        this,
+                        name,
+                        typeof props.placeholder !== "undefined"
+                    );
+                } else {
+                    props.onChange = this.handleChange.bind(this, name);
+                }
 
                 if (type === "submit") {
                     props.onClick = this.handleSubmit.bind(this);
@@ -133,9 +135,19 @@ class Shlorm extends React.Component {
                 valid: true,
             },
         });
+    }
 
-        // console.log(this.form.refs[field].current);
-        // this.form.refs[field].current.props.value = e.target.value;
+    handleSelectChange(field, hasPlaceholder, e) {
+        let { options, value } = e.target;
+
+        if (hasPlaceholder && options.selectedIndex === 0) value = "";
+
+        this.setState({
+            [field]: {
+                value,
+                valid: true,
+            },
+        });
     }
 
     handleSubmit(e) {
@@ -163,14 +175,24 @@ class Shlorm extends React.Component {
                         ref: current,
                     });
 
-                    Object.keys(current.refs).forEach((key) => {
-                        const ref = current.refs[key];
+                    if (current.input) {
+                        // Material UI case
+                        const ref = current.input;
 
                         if (ref.focus && !focused) {
                             ref.focus();
                             focused = true;
                         }
-                    });
+                    } else {
+                        Object.keys(current.refs).forEach((key) => {
+                            const ref = current.refs[key];
+
+                            if (ref.focus && !focused) {
+                                ref.focus();
+                                focused = true;
+                            }
+                        });
+                    }
                 }
             }
         });

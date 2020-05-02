@@ -2246,15 +2246,17 @@ function (_React$Component) {
         if (!type) type = _child.type.shlormType;
 
         if (type) {
-          _this3.form.refs[name] = external_react_default.a.createRef();
+          if (type !== "submit") {
+            _this3.form.refs[name] = external_react_default.a.createRef();
+          }
+
           props.ref = _this3.form.refs[name];
-          props.onChange = _this3.handleChange.bind(_this3, name); // if (type === 'select') {
-          //     // If a select isn't set with a value, we need to add it to the props so that
-          //     // it can be picked up by the handleSubmit method
-          //     if (!_child.props.value) {
-          //         props.value = _child.props.options[0].value;
-          //     }
-          // }
+
+          if (type === "select") {
+            props.onChange = _this3.handleSelectChange.bind(_this3, name, typeof props.placeholder !== "undefined");
+          } else {
+            props.onChange = _this3.handleChange.bind(_this3, name);
+          }
 
           if (type === "submit") {
             props.onClick = _this3.handleSubmit.bind(_this3);
@@ -2274,8 +2276,19 @@ function (_React$Component) {
       this.setState(_defineProperty({}, field, {
         value: e.target.value,
         valid: true
-      })); // console.log(this.form.refs[field].current);
-      // this.form.refs[field].current.props.value = e.target.value;
+      }));
+    }
+  }, {
+    key: "handleSelectChange",
+    value: function handleSelectChange(field, hasPlaceholder, e) {
+      var _e$target = e.target,
+          options = _e$target.options,
+          value = _e$target.value;
+      if (hasPlaceholder && options.selectedIndex === 0) value = "";
+      this.setState(_defineProperty({}, field, {
+        value: value,
+        valid: true
+      }));
     }
   }, {
     key: "handleSubmit",
@@ -2300,14 +2313,25 @@ function (_React$Component) {
               message: current.props.errorMessage || "".concat(key, " is invalid"),
               ref: current
             });
-            Object.keys(current.refs).forEach(function (key) {
-              var ref = current.refs[key];
+
+            if (current.input) {
+              // Material UI case
+              var ref = current.input;
 
               if (ref.focus && !focused) {
                 ref.focus();
                 focused = true;
               }
-            });
+            } else {
+              Object.keys(current.refs).forEach(function (key) {
+                var ref = current.refs[key];
+
+                if (ref.focus && !focused) {
+                  ref.focus();
+                  focused = true;
+                }
+              });
+            }
           }
         }
       });
