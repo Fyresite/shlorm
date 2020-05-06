@@ -2303,7 +2303,6 @@ function (_React$Component) {
     value: function handleSubmit(e) {
       var _this4 = this;
 
-      console.log("here");
       e.preventDefault();
       var refs = this.form.refs;
       var state = lodash_clonedeep_default()(this.state);
@@ -2313,7 +2312,7 @@ function (_React$Component) {
         var current = refs[key].current;
 
         if (current.props && current.props.validator) {
-          var valid = current.props.validator(state[key].value);
+          var valid = current.props.validator(state[key].value, state);
           state[key].valid = valid;
 
           if (!valid) {

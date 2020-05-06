@@ -170,7 +170,7 @@ class Shlorm extends React.Component {
             const { current } = refs[key];
 
             if (current.props && current.props.validator) {
-                let valid = current.props.validator(state[key].value);
+                let valid = current.props.validator(state[key].value, state);
 
                 state[key].valid = valid;
 
