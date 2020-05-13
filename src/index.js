@@ -41,7 +41,7 @@ class Shlorm extends React.Component {
 
         this.children = [];
 
-        this.children = this.updateChildren();
+        this.recursiveUpdateChildren = this.recursiveUpdateChildren.bind(this);
     }
 
     // shouldComponentUpdate(_, nextState) {
@@ -95,20 +95,16 @@ class Shlorm extends React.Component {
         return form;
     }
 
-    updateChildren() {
-        // updateChildren(state) {
+    updateChildren(state) {
         if (!this.props.children) return [];
 
         let i = 0;
 
         // const children = React.Children.map(this.props.children, (_child) => {
-        const children = recursiveChildMap(this.props.children, (_child) => {
+        return recursiveChildMap(this.props.children, (_child) => {
             // const children = React.Children.map(this.props.children, (_child) => {
             // Remove shlorm boolean tags so we don't get any warnings
             let { props: _props, ...child } = _child;
-
-            // console.log("_props", _props);
-
             let {
                 "shlorm-type": type,
                 "shlorm-submit": submit,
@@ -162,7 +158,7 @@ class Shlorm extends React.Component {
                     props.onClick = this.handleSubmit.bind(this);
                 } else {
                     // If type is not a submit button
-                    props = { ...props, ...this.state[name] }; // add value and valid to child
+                    props = { ...props, ...state[name] }; // add value and valid to child
                 }
             }
 
@@ -172,8 +168,122 @@ class Shlorm extends React.Component {
 
             return React.createElement(child.type, props);
         });
+    }
 
-        return children;
+    recursiveUpdateChildren(children, state) {
+        if (!children) return [];
+
+        let i = 0;
+
+        // console.log("state1", state);
+
+        return React.Children.map(children, (_child) => {
+            // const children = React.Children.map(this.props.children, (_child) => {
+            // Remove shlorm boolean tags so we don't get any warnings
+            let { props: _props, ...child } = _child;
+            let {
+                "shlorm-type": type,
+                "shlorm-submit": submit,
+                ...props
+            } = _props;
+            child = { props, ...child };
+
+            const { name } = child.props;
+
+            props.key = name ? `shlorm-input-${name}` : uuid();
+
+            // If type is not defined here, we check the 'shlormType' property on the component instance itself
+            if (!type) type = _child.type.shlormType;
+
+            if (type) {
+                if (type !== "submit") {
+                    this.form.refs[name] = React.createRef();
+
+                    props.onKeyPress = (e) => {
+                        if (e.charCode === 13) {
+                            // Enter key
+                            this.handleSubmit(e);
+                        }
+                    };
+
+                    props.lang = "farts";
+
+                    if (type === "select") {
+                        props.onChange = this.handleSelectChange.bind(
+                            this,
+                            name,
+                            typeof props.placeholder !== "undefined",
+                            props.onChange
+                        );
+                    } else {
+                        props.onChange = this.handleChange.bind(
+                            this,
+                            name,
+                            props.onChange
+                        );
+                    }
+                }
+
+                props.ref = this.form.refs[name];
+
+                if (type === "submit") {
+                    props.onClick = this.handleSubmit.bind(this);
+                } else {
+                    // If type is not a submit button
+                    // console.log("state2", state[name]);
+                    props = { ...props, ...state[name] }; // add value and valid to child
+                }
+            }
+
+            console.log("type", child.type);
+            console.log("_child", _child);
+            console.log("child", child);
+
+            if (child.props.children) {
+                // if (typeof child.type === "string") {
+                //     child = React.createElement(child.type, {
+                //         children: this.recursiveUpdateChildren(
+                //             child.props.children,
+                //             state
+                //         ),
+                //     });
+                // } else {
+                //     child = React.createElement(child, {
+                //         children: this.recursiveUpdateChildren(
+                //             child.props.children,
+                //             state
+                //         ),
+                //     });
+                // }
+                // console.log("type", child.type);
+                // if (typeof child === "function") {
+
+                // console.log(props);
+
+                // child = React.createElement(
+                //     child,
+                //     props,
+                //     this.recursiveUpdateChildren(child.props.children, state)
+                // );
+                // } else {
+                child = React.cloneElement(child, {
+                    children: this.recursiveUpdateChildren(
+                        child.props.children,
+                        state
+                    ),
+                });
+                // }
+            } else {
+                console.log("else", child);
+                child = React.createElement(child.type, props);
+            }
+
+            // console.log(i, _child);
+            i++;
+            // console.log("props", props);
+
+            return child;
+        });
     }
 
     handleChange(field, onChange, e) {
@@ -267,9 +377,10 @@ class Shlorm extends React.Component {
     }
 
     render() {
-        console.log("rerender");
-        const { style, ...rest } = this.props;
+        // console.log("rerender");
+        const { children, style, ...rest } = this.props;
         // this.children = this.updateChildren(this.state);
+        this.children = this.recursiveUpdateChildren(children, this.state);
 
         return (
             <form

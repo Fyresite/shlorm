@@ -6,6 +6,8 @@ function recursiveChildMap(children, fn) {
             return child;
         }
 
+        // console.log("child", child);
+
         if (child.props.children) {
             if (typeof child === "function") {
                 child = React.createElement(child, {

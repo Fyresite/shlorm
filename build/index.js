@@ -1985,7 +1985,8 @@ function recursiveChildMap(children, fn) {
   return external_react_default.a.Children.map(children, function (child) {
     if (!external_react_default.a.isValidElement(child)) {
       return child;
-    }
+    } // console.log("child", child);
+
 
     if (child.props.children) {
       if (typeof child === "function") {
@@ -2158,9 +2159,9 @@ function src_createClass(Constructor, protoProps, staticProps) { if (protoProps)
 
 function src_possibleConstructorReturn(self, call) { if (call && (src_typeof(call) === "object" || typeof call === "function")) { return call; } return src_assertThisInitialized(self); }
 
-function src_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function src_getPrototypeOf(o) { src_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return src_getPrototypeOf(o); }
+
+function src_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function src_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) src_setPrototypeOf(subClass, superClass); }
 
@@ -2212,7 +2213,7 @@ function (_React$Component) {
       refs: {}
     };
     _this.children = [];
-    _this.children = _this.updateChildren();
+    _this.recursiveUpdateChildren = _this.recursiveUpdateChildren.bind(src_assertThisInitialized(_this));
     return _this;
   } // shouldComponentUpdate(_, nextState) {
   //     // Makes sure this component never updates, which increases performance by stopping
@@ -2265,19 +2266,17 @@ function (_React$Component) {
     }
   }, {
     key: "updateChildren",
-    value: function updateChildren() {
+    value: function updateChildren(state) {
       var _this3 = this;
 
-      // updateChildren(state) {
       if (!this.props.children) return [];
       var i = 0; // const children = React.Children.map(this.props.children, (_child) => {
 
-      var children = recursive_child_map(this.props.children, function (_child) {
+      return recursive_child_map(this.props.children, function (_child) {
         // const children = React.Children.map(this.props.children, (_child) => {
         // Remove shlorm boolean tags so we don't get any warnings
         var _props = _child.props,
-            child = src_objectWithoutProperties(_child, ["props"]); // console.log("_props", _props);
-
+            child = src_objectWithoutProperties(_child, ["props"]);
 
         var type = _props["shlorm-type"],
             submit = _props["shlorm-submit"],
@@ -2317,21 +2316,122 @@ function (_React$Component) {
 
           if (type === "submit") {
             props.onClick = _this3.handleSubmit.bind(_this3);
-          } else {// If type is not a submit button
-            // porps = {...props, }
-            // props = { ...props, ...this.state[name] }; // add value and valid to child
+          } else {
+            // If type is not a submit button
+            props = _objectSpread({}, props, {}, state[name]); // add value and valid to child
           }
         } // console.log(i, _child);
 
 
         i++;
         console.log("props", props);
-        var el = external_react_default.a.createElement(child.type, props);
-        el.props.value = _this3.state[name].value;
-        return el;
         return external_react_default.a.createElement(child.type, props);
       });
-      return children;
+    }
+  }, {
+    key: "recursiveUpdateChildren",
+    value: function recursiveUpdateChildren(children, state) {
+      var _this4 = this;
+
+      if (!children) return [];
+      var i = 0; // console.log("state1", state);
+
+      return external_react_default.a.Children.map(children, function (_child) {
+        // const children = React.Children.map(this.props.children, (_child) => {
+        // Remove shlorm boolean tags so we don't get any warnings
+        var _props = _child.props,
+            child = src_objectWithoutProperties(_child, ["props"]);
+
+        var type = _props["shlorm-type"],
+            submit = _props["shlorm-submit"],
+            props = src_objectWithoutProperties(_props, ["shlorm-type", "shlorm-submit"]);
+
+        child = _objectSpread({
+          props: props
+        }, child);
+        var name = child.props.name;
+        props.key = name ? "shlorm-input-".concat(name) : esm_browser_v4(); // If type is not defined here, we check the 'shlormType' property on the component instance itself
+
+        if (!type) type = _child.type.shlormType;
+
+        if (type) {
+          if (type !== "submit") {
+            _this4.form.refs[name] = external_react_default.a.createRef();
+
+            props.onKeyPress = function (e) {
+              if (e.charCode === 13) {
+                // Enter key
+                _this4.handleSubmit(e);
+              }
+            };
+
+            props.lang = "farts";
+
+            if (type === "select") {
+              props.onChange = _this4.handleSelectChange.bind(_this4, name, typeof props.placeholder !== "undefined", props.onChange);
+            } else {
+              props.onChange = _this4.handleChange.bind(_this4, name, props.onChange);
+            }
+          }
+
+          props.ref = _this4.form.refs[name];
+
+          if (type === "submit") {
+            props.onClick = _this4.handleSubmit.bind(_this4);
+          } else {
+            // If type is not a submit button
+            // console.log("state2", state[name]);
+            props = _objectSpread({}, props, {}, state[name]); // add value and valid to child
+          }
+        }
+
+        console.log("type", child.type);
+        console.log("_child", _child);
+        console.log("child", child);
+
+        if (child.props.children) {
+          // if (typeof child.type === "string") {
+          //     child = React.createElement(child.type, {
+          //         children: this.recursiveUpdateChildren(
+          //             child.props.children,
+          //             state
+          //         ),
+          //     });
+          // } else {
+          //     child = React.createElement(child, {
+          //         children: this.recursiveUpdateChildren(
+          //             child.props.children,
+          //             state
+          //         ),
+          //     });
+          // }
+          // console.log("type", child.type);
+          // if (typeof child === "function") {
+          // console.log(props);
+          // child = React.createElement(
+          //     child,
+          //     props,
+          //     this.recursiveUpdateChildren(child.props.children, state)
+          // );
+          // } else {
+          child = external_react_default.a.cloneElement(child, {
+            children: _this4.recursiveUpdateChildren(child.props.children, state)
+          }); // }
+        } else {
+          console.log("else", child);
+
+          var _props3 = props,
+              value = _props3.value,
+              _props2 = src_objectWithoutProperties(_props3, ["value"]);
+
+          child = external_react_default.a.createElement(child.type, _props2);
+        } // console.log(i, _child);
+
+
+        i++; // console.log("props", props);
+
+        return child;
+      });
     }
   }, {
     key: "handleChange",
@@ -2365,7 +2465,7 @@ function (_React$Component) {
   }, {
     key: "handleSubmit",
     value: function handleSubmit(e) {
-      var _this4 = this;
+      var _this5 = this;
 
       e.preventDefault();
       console.log("farts");
@@ -2411,22 +2511,23 @@ function (_React$Component) {
       state.submitted = Date.now();
       this.setState(state, function () {
         if (invalid.length) {
-          if (_this4.props.onError) _this4.props.onError(invalid);
+          if (_this5.props.onError) _this5.props.onError(invalid);
         } else {
-          if (_this4.props.onSubmit) _this4.props.onSubmit(_this4.getForm());
+          if (_this5.props.onSubmit) _this5.props.onSubmit(_this5.getForm());
         }
       });
     }
   }, {
     key: "render",
     value: function render() {
-      console.log("rerender");
-
+      // console.log("rerender");
       var _this$props = this.props,
+          children = _this$props.children,
           style = _this$props.style,
-          rest = src_objectWithoutProperties(_this$props, ["style"]); // this.children = this.updateChildren(this.state);
+          rest = src_objectWithoutProperties(_this$props, ["children", "style"]); // this.children = this.updateChildren(this.state);
 
 
+      this.children = this.recursiveUpdateChildren(children, this.state);
       return external_react_default.a.createElement("form", src_extends({
         onSubmit: this.handleSubmit.bind(this),
         style: _objectSpread({
