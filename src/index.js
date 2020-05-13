@@ -1,315 +1,52 @@
-import React from "react";
-import { v4 as uuid } from "uuid";
-import cloneDeep from "lodash.clonedeep";
+import React, { Component } from "react";
+import { cloneDeep } from "lodash";
 
-import recursiveChildMap from "./utils/recursive-child-map";
-
-import Input from "./Input";
-import Select from "./Select";
-
-class Shlorm extends React.Component {
+class Shlorm extends Component {
     constructor(props) {
         super(props);
 
-        const state = { submitted: null };
-
-        // Create state from children
-        if (props.children) {
-            // React.Children.forEach(props.children, (child) => {
-            recursiveChildMap(props.children, (child) => {
-                if (child.type.shlormType || child.props["shlorm-type"]) {
-                    const value = this.getChildValue(child);
-
-                    let type = child.type.shlormType;
-
-                    if (!type) type = child.props["shlorm-type"];
-
-                    // Only track the state of certain shlorm types
-                    if (!["submit"].includes(type)) {
-                        state[child.props.name] = {
-                            value,
-                            valid: true,
-                        };
-                    }
-                }
-            });
-        }
-
-        this.state = state;
-
-        this.form = { refs: {} };
-
-        this.children = [];
-
-        this.recursiveUpdateChildren = this.recursiveUpdateChildren.bind(this);
+        this.state = this.createState(props.children);
     }
 
-    // shouldComponentUpdate(_, nextState) {
-    //     // Makes sure this component never updates, which increases performance by stopping
-    //     // unnecessary re-renders. We do want a re-render on submit though.
-    //     if (this.state.submitted !== nextState.submitted) {
-    //         return true;
-    //     }
-
-    //     for (let i = 0; i < Object.keys(this.state).length; i++) {
-    //         const key = Object.keys(this.state)[i];
-
-    //         if (key !== "submitted") {
-    //             const { value, valid } = this.state[key];
-
-    //             if (
-    //                 nextState[key].value !== value ||
-    //                 nextState[key].valid !== valid
-    //             ) {
-    //                 return false;
-    //             }
-    //         }
-    //     }
-
-    //     return true;
-    // }
-
-    getChildValue(child) {
-        if (child.props.value) return child.props.value;
-
-        const type = child.type.shlormType || child.props["shlorm-type"];
-
-        if (type === "select") {
-            if (child.props.placeholder) {
-                return "";
-            }
-
-            return child.props.options[0].value;
-        }
-
-        return "";
-    }
-
-    getForm() {
-        const form = {};
-
-        Object.keys(this.state).forEach((key) => {
-            if (key !== "submitted") form[key] = this.state[key].value;
-        });
-
-        return form;
-    }
-
-    updateChildren(state) {
-        if (!this.props.children) return [];
-
-        let i = 0;
-
-        // const children = React.Children.map(this.props.children, (_child) => {
-        return recursiveChildMap(this.props.children, (_child) => {
-            // const children = React.Children.map(this.props.children, (_child) => {
-            // Remove shlorm boolean tags so we don't get any warnings
-            let { props: _props, ...child } = _child;
-            let {
-                "shlorm-type": type,
-                "shlorm-submit": submit,
-                // value, // JUST ADDED REMOVE IF NOT WORKING
-                ...props
-            } = _props;
-            // console.log("props", props);
-            child = { props, ...child };
-
-            // console.log("value", value);
-
-            const { name } = child.props;
-
-            props.key = name ? `shlorm-input-${name}` : uuid();
+    createState(children, state = {}) {
+        React.Children.forEach(children, (child) => {
+            let type = child.props["shlorm-type"];
 
             // If type is not defined here, we check the 'shlormType' property on the component instance itself
-            if (!type) type = _child.type.shlormType;
+            if (!type) type = child.type.shlormType;
 
-            if (type) {
-                if (type !== "submit") {
-                    this.form.refs[name] = React.createRef();
+            if (["input", "select"].includes(type)) {
+                state[child.props.name] = {
+                    value: child.props.value || "",
+                    valid: child.props.valid || true,
+                    validator: child.props.validator || null,
+                    onChange: child.props.onChange || null,
+                };
 
-                    props.onKeyPress = (e) => {
-                        if (e.charCode === 13) {
-                            // Enter key
-                            this.handleSubmit(e);
-                        }
-                    };
-
-                    props.lang = "farts";
-
-                    if (type === "select") {
-                        props.onChange = this.handleSelectChange.bind(
-                            this,
-                            name,
-                            typeof props.placeholder !== "undefined",
-                            props.onChange
-                        );
-                    } else {
-                        props.onChange = this.handleChange.bind(
-                            this,
-                            name,
-                            props.onChange
-                        );
-                    }
-                }
-
-                props.ref = this.form.refs[name];
-
-                if (type === "submit") {
-                    props.onClick = this.handleSubmit.bind(this);
-                } else {
-                    // If type is not a submit button
-                    props = { ...props, ...state[name] }; // add value and valid to child
-                }
+                return;
             }
 
-            // console.log(i, _child);
-            i++;
-            console.log("props", props);
-
-            return React.createElement(child.type, props);
+            if (
+                child.props.children &&
+                typeof child.props.children !== "string"
+            ) {
+                this.createState(child.props.children, state);
+            }
         });
+
+        return state;
     }
 
-    recursiveUpdateChildren(children, state) {
-        if (!children) return [];
+    handleChange(e) {
+        let { name, value } = e.target;
 
-        let i = 0;
-
-        // console.log("state1", state);
-
-        return React.Children.map(children, (_child) => {
-            // const children = React.Children.map(this.props.children, (_child) => {
-            // Remove shlorm boolean tags so we don't get any warnings
-            let { props: _props, ...child } = _child;
-            let {
-                "shlorm-type": type,
-                "shlorm-submit": submit,
-                ...props
-            } = _props;
-            child = { props, ...child };
-
-            const { name } = child.props;
-
-            props.key = name ? `shlorm-input-${name}` : uuid();
-
-            // If type is not defined here, we check the 'shlormType' property on the component instance itself
-            if (!type) type = _child.type.shlormType;
-
-            if (type) {
-                if (type !== "submit") {
-                    this.form.refs[name] = React.createRef();
-
-                    props.onKeyPress = (e) => {
-                        if (e.charCode === 13) {
-                            // Enter key
-                            this.handleSubmit(e);
-                        }
-                    };
-
-                    props.lang = "farts";
-
-                    if (type === "select") {
-                        props.onChange = this.handleSelectChange.bind(
-                            this,
-                            name,
-                            typeof props.placeholder !== "undefined",
-                            props.onChange
-                        );
-                    } else {
-                        props.onChange = this.handleChange.bind(
-                            this,
-                            name,
-                            props.onChange
-                        );
-                    }
-                }
-
-                props.ref = this.form.refs[name];
-
-                if (type === "submit") {
-                    props.onClick = this.handleSubmit.bind(this);
-                } else {
-                    // If type is not a submit button
-                    // console.log("state2", state[name]);
-                    props = { ...props, ...state[name] }; // add value and valid to child
-                }
-            }
-
-            console.log("type", child.type);
-            console.log("_child", _child);
-            console.log("child", child);
-
-            if (child.props.children) {
-                // if (typeof child.type === "string") {
-                //     child = React.createElement(child.type, {
-                //         children: this.recursiveUpdateChildren(
-                //             child.props.children,
-                //             state
-                //         ),
-                //     });
-                // } else {
-                //     child = React.createElement(child, {
-                //         children: this.recursiveUpdateChildren(
-                //             child.props.children,
-                //             state
-                //         ),
-                //     });
-                // }
-                // console.log("type", child.type);
-                // if (typeof child === "function") {
-
-                // console.log(props);
-
-                // child = React.createElement(
-                //     child,
-                //     props,
-                //     this.recursiveUpdateChildren(child.props.children, state)
-                // );
-                // } else {
-                child = React.cloneElement(child, {
-                    children: this.recursiveUpdateChildren(
-                        child.props.children,
-                        state
-                    ),
-                });
-                // }
-            } else {
-                console.log("else", child);
-                child = React.cloneElement(child, props);
-            }
-
-            // console.log(i, _child);
-            i++;
-            // console.log("props", props);
-
-            return child;
-        });
-    }
-
-    handleChange(field, onChange, e) {
-        if (typeof onChange === "function") {
-            onChange(e);
+        if (typeof this.state[name].onChange === "function") {
+            value = this.state[name].onChange(e);
         }
 
         this.setState({
-            [field]: {
-                value: e.target.value,
-                valid: true,
-            },
-        });
-    }
-
-    handleSelectChange(field, hasPlaceholder, onChange, e) {
-        let { options, value } = e.target;
-
-        if (typeof onChange === "function") {
-            onChange(e);
-        }
-
-        if (hasPlaceholder && options.selectedIndex === 0) value = "";
-
-        this.setState({
-            [field]: {
+            [name]: {
+                ...this.state[name],
                 value,
                 valid: true,
             },
@@ -319,83 +56,50 @@ class Shlorm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
 
-        console.log("farts");
+        const { elements } = e.target;
 
-        const { refs } = this.form;
         const state = cloneDeep(this.state);
 
-        let invalid = [];
-        let focused = false;
+        const form = {};
+        const invalid = [];
 
-        Object.keys(refs).forEach((key) => {
-            const { current } = refs[key];
+        Object.keys(state).forEach((key) => {
+            let { value, valid, validator } = state[key];
 
-            if (current.props && current.props.validator) {
-                let valid = current.props.validator(state[key].value, state);
+            form[key] = value;
 
-                state[key].valid = valid;
-
-                if (!valid) {
-                    invalid.push({
-                        field: key,
-                        message:
-                            current.props.errorMessage || `${key} is invalid`,
-                        ref: current,
-                    });
-
-                    if (current.input) {
-                        // Material UI case
-                        const ref = current.input;
-
-                        if (ref.focus && !focused) {
-                            ref.focus();
-                            focused = true;
-                        }
-                    } else {
-                        Object.keys(current.refs).forEach((key) => {
-                            const ref = current.refs[key];
-
-                            if (ref.focus && !focused) {
-                                ref.focus();
-                                focused = true;
-                            }
-                        });
-                    }
-                }
+            if (validator) {
+                valid = validator(value);
             }
+
+            if (!valid) invalid.push(key);
         });
 
-        state.submitted = Date.now();
+        if (invalid.length) {
+            elements.namedItem(invalid[0]).focus();
+            this.setState(state);
 
-        this.setState(state, () => {
-            if (invalid.length) {
-                if (this.props.onError) this.props.onError(invalid);
-            } else {
-                if (this.props.onSubmit) this.props.onSubmit(this.getForm());
-            }
-        });
+            this.props.onError(invalid);
+
+            return;
+        }
+
+        this.props.onSubmit(form);
     }
 
     render() {
-        // console.log("rerender");
-        const { children, style, ...rest } = this.props;
-        // this.children = this.updateChildren(this.state);
-        this.children = this.recursiveUpdateChildren(children, this.state);
+        const { children, onSubmit, ...props } = this.props;
 
         return (
             <form
+                onChange={this.handleChange.bind(this)}
                 onSubmit={this.handleSubmit.bind(this)}
-                style={{ display: "flex", flexDirection: "column", ...style }}
-                {...rest}
+                {...props}
             >
-                {this.children}
+                {children}
             </form>
         );
     }
 }
-
-Shlorm.displayName = "Shlorm";
-
-export { Input, Select };
 
 export default Shlorm;

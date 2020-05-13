@@ -6,12 +6,18 @@ class Input extends React.Component {
     }
 
     render() {
-        const { type = "text", valid, validator, ...rest } = this.props;
+        const {
+            onChange,
+            type = "text",
+            valid,
+            validator,
+            ...rest
+        } = this.props;
 
         return <input type={type} ref="input" {...rest} />;
     }
 }
 
-Input.shlormType = 'input';
+Input.shlormType = "input";
 
 export default Input;

@@ -6,7 +6,14 @@ class Select extends React.Component {
     }
 
     render() {
-        const { name, valid, validator, options = [], ...rest } = this.props;
+        const {
+            onChange,
+            name,
+            valid,
+            validator,
+            options = [],
+            ...rest
+        } = this.props;
 
         return (
             <select ref="input" name={name} {...rest}>
@@ -20,6 +27,6 @@ class Select extends React.Component {
     }
 }
 
-Select.shlormType = 'select';
+Select.shlormType = "select";
 
 export default Select;

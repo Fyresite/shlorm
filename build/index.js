@@ -2414,17 +2414,11 @@ function (_React$Component) {
           //     this.recursiveUpdateChildren(child.props.children, state)
           // );
           // } else {
-          child = external_react_default.a.cloneElement(child, {
+          child = external_react_default.a.cloneElement(child, _objectSpread({
             children: _this4.recursiveUpdateChildren(child.props.children, state)
-          }); // }
+          }, props)); // }
         } else {
-          console.log("else", child);
-
-          var _props3 = props,
-              value = _props3.value,
-              _props2 = src_objectWithoutProperties(_props3, ["value"]);
-
-          child = external_react_default.a.createElement(child.type, _props2);
+          console.log("else", child); // child = React.cloneElement(child, props);
         } // console.log(i, _child);
 
 
