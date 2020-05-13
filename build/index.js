@@ -2314,11 +2314,10 @@ function (_React$Component) {
 
           props.ref = _this3.form.refs[name];
 
-          if (type === "submit") {
-            props.onClick = _this3.handleSubmit.bind(_this3);
+          if (type === "select") {
+            props.onChange = _this3.handleSelectChange.bind(_this3, name, typeof props.placeholder !== "undefined", props.onChange);
           } else {
-            // If type is not a submit button
-            props = _objectSpread({}, props, {}, state[name]); // add value and valid to child
+            props.onChange = _this3.handleChange.bind(_this3, name, props.onChange);
           }
         } // console.log(i, _child);
 
@@ -2430,13 +2429,18 @@ function (_React$Component) {
   }, {
     key: "handleChange",
     value: function handleChange(field, onChange, e) {
+      var value = e.target.value;
+      var valid = true;
+
       if (typeof onChange === "function") {
-        onChange(e);
+        var changed = onChange(e);
+        if (changed && changed.value) value = changed.value;
+        if (changed && changed.valid) valid = changed.valid;
       }
 
       this.setState(_defineProperty({}, field, {
-        value: e.target.value,
-        valid: true
+        value: value,
+        valid: valid
       }));
     }
   }, {
@@ -2445,15 +2449,18 @@ function (_React$Component) {
       var _e$target = e.target,
           options = _e$target.options,
           value = _e$target.value;
+      var valid = true;
 
       if (typeof onChange === "function") {
-        onChange(e);
+        var changed = onChange(e);
+        if (changed && changed.value) value = changed.value;
+        if (changed && changed.valid) valid = changed.valid;
       }
 
       if (hasPlaceholder && options.selectedIndex === 0) value = "";
       this.setState(_defineProperty({}, field, {
         value: value,
-        valid: true
+        valid: valid
       }));
     }
   }, {
