@@ -275,7 +275,7 @@ class Shlorm extends React.Component {
                 // }
             } else {
                 console.log("else", child);
-                child = React.createElement(child.type, props);
+                child = React.cloneElement(child, props);
             }
 
             // console.log(i, _child);
