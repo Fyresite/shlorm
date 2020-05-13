@@ -1978,6 +1978,33 @@ function v4(options, buf, offset) {
 var lodash_clonedeep = __webpack_require__(1);
 var lodash_clonedeep_default = /*#__PURE__*/__webpack_require__.n(lodash_clonedeep);
 
+// CONCATENATED MODULE: ./src/utils/recursive-child-map.js
+
+
+function recursiveChildMap(children, fn) {
+  return external_react_default.a.Children.map(children, function (child) {
+    if (!external_react_default.a.isValidElement(child)) {
+      return child;
+    }
+
+    if (child.props.children) {
+      if (typeof child === "function") {
+        child = external_react_default.a.createElement(child, {
+          children: recursiveChildMap(child.props.children, fn)
+        });
+      } else {
+        child = external_react_default.a.cloneElement(child, {
+          children: recursiveChildMap(child.props.children, fn)
+        });
+      } // child.children = recursiveChildMap(child.props.children, fn);
+
+    }
+
+    return fn(child);
+  });
+}
+
+/* harmony default export */ var recursive_child_map = (recursiveChildMap);
 // CONCATENATED MODULE: ./src/Input.js
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -2145,6 +2172,7 @@ function src_setPrototypeOf(o, p) { src_setPrototypeOf = Object.setPrototypeOf |
 
 
 
+
 var src_Shlorm =
 /*#__PURE__*/
 function (_React$Component) {
@@ -2161,7 +2189,8 @@ function (_React$Component) {
     }; // Create state from children
 
     if (props.children) {
-      external_react_default.a.Children.forEach(props.children, function (child) {
+      // React.Children.forEach(props.children, (child) => {
+      recursive_child_map(props.children, function (child) {
         if (child.type.shlormType || child.props["shlorm-type"]) {
           var value = _this.getChildValue(child);
 
@@ -2183,15 +2212,27 @@ function (_React$Component) {
       refs: {}
     };
     _this.children = [];
+    _this.children = _this.updateChildren();
     return _this;
-  } // TODO: Fix this so that components that aren't part of the form can still re-render
-  // shouldComponentUpdate(_, nextState) {
+  } // shouldComponentUpdate(_, nextState) {
   //     // Makes sure this component never updates, which increases performance by stopping
   //     // unnecessary re-renders. We do want a re-render on submit though.
   //     if (this.state.submitted !== nextState.submitted) {
   //         return true;
   //     }
-  //     return false;
+  //     for (let i = 0; i < Object.keys(this.state).length; i++) {
+  //         const key = Object.keys(this.state)[i];
+  //         if (key !== "submitted") {
+  //             const { value, valid } = this.state[key];
+  //             if (
+  //                 nextState[key].value !== value ||
+  //                 nextState[key].valid !== valid
+  //             ) {
+  //                 return false;
+  //             }
+  //         }
+  //     }
+  //     return true;
   // }
 
 
@@ -2224,22 +2265,29 @@ function (_React$Component) {
     }
   }, {
     key: "updateChildren",
-    value: function updateChildren(state) {
+    value: function updateChildren() {
       var _this3 = this;
 
+      // updateChildren(state) {
       if (!this.props.children) return [];
-      var children = external_react_default.a.Children.map(this.props.children, function (_child) {
+      var i = 0; // const children = React.Children.map(this.props.children, (_child) => {
+
+      var children = recursive_child_map(this.props.children, function (_child) {
+        // const children = React.Children.map(this.props.children, (_child) => {
         // Remove shlorm boolean tags so we don't get any warnings
         var _props = _child.props,
-            child = src_objectWithoutProperties(_child, ["props"]);
+            child = src_objectWithoutProperties(_child, ["props"]); // console.log("_props", _props);
+
 
         var type = _props["shlorm-type"],
             submit = _props["shlorm-submit"],
-            props = src_objectWithoutProperties(_props, ["shlorm-type", "shlorm-submit"]);
+            props = src_objectWithoutProperties(_props, ["shlorm-type", "shlorm-submit"]); // console.log("props", props);
+
 
         child = _objectSpread({
           props: props
-        }, child);
+        }, child); // console.log("value", value);
+
         var name = child.props.name;
         props.key = name ? "shlorm-input-".concat(name) : esm_browser_v4(); // If type is not defined here, we check the 'shlormType' property on the component instance itself
 
@@ -2252,35 +2300,46 @@ function (_React$Component) {
             props.onKeyPress = function (e) {
               if (e.charCode === 13) {
                 // Enter key
-                // this.refs.form.submit();
                 _this3.handleSubmit(e);
               }
             };
+
+            props.lang = "farts";
+
+            if (type === "select") {
+              props.onChange = _this3.handleSelectChange.bind(_this3, name, typeof props.placeholder !== "undefined", props.onChange);
+            } else {
+              props.onChange = _this3.handleChange.bind(_this3, name, props.onChange);
+            }
           }
 
           props.ref = _this3.form.refs[name];
 
-          if (type === "select") {
-            props.onChange = _this3.handleSelectChange.bind(_this3, name, typeof props.placeholder !== "undefined");
-          } else {
-            props.onChange = _this3.handleChange.bind(_this3, name);
-          }
-
           if (type === "submit") {
             props.onClick = _this3.handleSubmit.bind(_this3);
-          } else {
-            // If type is not a submit button
-            props = _objectSpread({}, props, {}, state[name]); // add value and valid to child
+          } else {// If type is not a submit button
+            // porps = {...props, }
+            // props = { ...props, ...this.state[name] }; // add value and valid to child
           }
-        }
+        } // console.log(i, _child);
 
+
+        i++;
+        console.log("props", props);
+        var el = external_react_default.a.createElement(child.type, props);
+        el.props.value = _this3.state[name].value;
+        return el;
         return external_react_default.a.createElement(child.type, props);
       });
       return children;
     }
   }, {
     key: "handleChange",
-    value: function handleChange(field, e) {
+    value: function handleChange(field, onChange, e) {
+      if (typeof onChange === "function") {
+        onChange(e);
+      }
+
       this.setState(_defineProperty({}, field, {
         value: e.target.value,
         valid: true
@@ -2288,10 +2347,15 @@ function (_React$Component) {
     }
   }, {
     key: "handleSelectChange",
-    value: function handleSelectChange(field, hasPlaceholder, e) {
+    value: function handleSelectChange(field, hasPlaceholder, onChange, e) {
       var _e$target = e.target,
           options = _e$target.options,
           value = _e$target.value;
+
+      if (typeof onChange === "function") {
+        onChange(e);
+      }
+
       if (hasPlaceholder && options.selectedIndex === 0) value = "";
       this.setState(_defineProperty({}, field, {
         value: value,
@@ -2304,6 +2368,7 @@ function (_React$Component) {
       var _this4 = this;
 
       e.preventDefault();
+      console.log("farts");
       var refs = this.form.refs;
       var state = lodash_clonedeep_default()(this.state);
       var invalid = [];
@@ -2355,11 +2420,13 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      console.log("rerender");
+
       var _this$props = this.props,
           style = _this$props.style,
-          rest = src_objectWithoutProperties(_this$props, ["style"]);
+          rest = src_objectWithoutProperties(_this$props, ["style"]); // this.children = this.updateChildren(this.state);
 
-      this.children = this.updateChildren(this.state);
+
       return external_react_default.a.createElement("form", src_extends({
         onSubmit: this.handleSubmit.bind(this),
         style: _objectSpread({

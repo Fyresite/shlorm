@@ -2,6 +2,8 @@ import React from "react";
 import { v4 as uuid } from "uuid";
 import cloneDeep from "lodash.clonedeep";
 
+import recursiveChildMap from "./utils/recursive-child-map";
+
 import Input from "./Input";
 import Select from "./Select";
 
@@ -13,7 +15,8 @@ class Shlorm extends React.Component {
 
         // Create state from children
         if (props.children) {
-            React.Children.forEach(props.children, (child) => {
+            // React.Children.forEach(props.children, (child) => {
+            recursiveChildMap(props.children, (child) => {
                 if (child.type.shlormType || child.props["shlorm-type"]) {
                     const value = this.getChildValue(child);
 
@@ -37,18 +40,33 @@ class Shlorm extends React.Component {
         this.form = { refs: {} };
 
         this.children = [];
+
+        this.children = this.updateChildren();
     }
 
-    // TODO: Fix this so that components that aren't part of the form can still re-render
     // shouldComponentUpdate(_, nextState) {
-
     //     // Makes sure this component never updates, which increases performance by stopping
     //     // unnecessary re-renders. We do want a re-render on submit though.
     //     if (this.state.submitted !== nextState.submitted) {
     //         return true;
     //     }
 
-    //     return false;
+    //     for (let i = 0; i < Object.keys(this.state).length; i++) {
+    //         const key = Object.keys(this.state)[i];
+
+    //         if (key !== "submitted") {
+    //             const { value, valid } = this.state[key];
+
+    //             if (
+    //                 nextState[key].value !== value ||
+    //                 nextState[key].valid !== valid
+    //             ) {
+    //                 return false;
+    //             }
+    //         }
+    //     }
+
+    //     return true;
     // }
 
     getChildValue(child) {
@@ -77,19 +95,30 @@ class Shlorm extends React.Component {
         return form;
     }
 
-    updateChildren(state) {
+    updateChildren() {
+        // updateChildren(state) {
         if (!this.props.children) return [];
 
-        const children = React.Children.map(this.props.children, (_child) => {
+        let i = 0;
+
+        // const children = React.Children.map(this.props.children, (_child) => {
+        const children = recursiveChildMap(this.props.children, (_child) => {
+            // const children = React.Children.map(this.props.children, (_child) => {
             // Remove shlorm boolean tags so we don't get any warnings
             let { props: _props, ...child } = _child;
+
+            // console.log("_props", _props);
 
             let {
                 "shlorm-type": type,
                 "shlorm-submit": submit,
+                // value, // JUST ADDED REMOVE IF NOT WORKING
                 ...props
             } = _props;
+            // console.log("props", props);
             child = { props, ...child };
+
+            // console.log("value", value);
 
             const { name } = child.props;
 
@@ -101,33 +130,45 @@ class Shlorm extends React.Component {
             if (type) {
                 if (type !== "submit") {
                     this.form.refs[name] = React.createRef();
+
                     props.onKeyPress = (e) => {
                         if (e.charCode === 13) {
                             // Enter key
-                            // this.refs.form.submit();
                             this.handleSubmit(e);
                         }
                     };
+
+                    props.lang = "farts";
+
+                    if (type === "select") {
+                        props.onChange = this.handleSelectChange.bind(
+                            this,
+                            name,
+                            typeof props.placeholder !== "undefined",
+                            props.onChange
+                        );
+                    } else {
+                        props.onChange = this.handleChange.bind(
+                            this,
+                            name,
+                            props.onChange
+                        );
+                    }
                 }
 
                 props.ref = this.form.refs[name];
-                if (type === "select") {
-                    props.onChange = this.handleSelectChange.bind(
-                        this,
-                        name,
-                        typeof props.placeholder !== "undefined"
-                    );
-                } else {
-                    props.onChange = this.handleChange.bind(this, name);
-                }
 
                 if (type === "submit") {
                     props.onClick = this.handleSubmit.bind(this);
                 } else {
                     // If type is not a submit button
-                    props = { ...props, ...state[name] }; // add value and valid to child
+                    props = { ...props, ...this.state[name] }; // add value and valid to child
                 }
             }
+
+            // console.log(i, _child);
+            i++;
+            console.log("props", props);
 
             return React.createElement(child.type, props);
         });
@@ -135,7 +176,11 @@ class Shlorm extends React.Component {
         return children;
     }
 
-    handleChange(field, e) {
+    handleChange(field, onChange, e) {
+        if (typeof onChange === "function") {
+            onChange(e);
+        }
+
         this.setState({
             [field]: {
                 value: e.target.value,
@@ -144,8 +189,12 @@ class Shlorm extends React.Component {
         });
     }
 
-    handleSelectChange(field, hasPlaceholder, e) {
+    handleSelectChange(field, hasPlaceholder, onChange, e) {
         let { options, value } = e.target;
+
+        if (typeof onChange === "function") {
+            onChange(e);
+        }
 
         if (hasPlaceholder && options.selectedIndex === 0) value = "";
 
@@ -159,6 +208,8 @@ class Shlorm extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
+
+        console.log("farts");
 
         const { refs } = this.form;
         const state = cloneDeep(this.state);
@@ -216,8 +267,9 @@ class Shlorm extends React.Component {
     }
 
     render() {
+        console.log("rerender");
         const { style, ...rest } = this.props;
-        this.children = this.updateChildren(this.state);
+        // this.children = this.updateChildren(this.state);
 
         return (
             <form
