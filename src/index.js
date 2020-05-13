@@ -115,10 +115,15 @@ class Shlorm extends React.Component {
                     props.onChange = this.handleSelectChange.bind(
                         this,
                         name,
-                        typeof props.placeholder !== "undefined"
+                        typeof props.placeholder !== "undefined",
+                        props.onChange
                     );
                 } else {
-                    props.onChange = this.handleChange.bind(this, name);
+                    props.onChange = this.handleChange.bind(
+                        this,
+                        name,
+                        props.onChange
+                    );
                 }
 
                 if (type === "submit") {
@@ -135,24 +140,42 @@ class Shlorm extends React.Component {
         return children;
     }
 
-    handleChange(field, e) {
+    handleChange(field, onChange, e) {
+        let { value } = e.target;
+        let valid = true;
+
+        if (typeof onChange === "function") {
+            let changed = onChange(e);
+
+            if (changed && changed.value) value = changed.value;
+            if (changed && changed.valid) valid = changed.valid;
+        }
+
         this.setState({
             [field]: {
-                value: e.target.value,
-                valid: true,
+                value,
+                valid,
             },
         });
     }
 
-    handleSelectChange(field, hasPlaceholder, e) {
+    handleSelectChange(field, hasPlaceholder, onChange, e) {
         let { options, value } = e.target;
+        let valid = true;
+
+        if (typeof onChange === "function") {
+            let changed = onChange(e);
+
+            if (changed && changed.value) value = changed.value;
+            if (changed && changed.valid) valid = changed.valid;
+        }
 
         if (hasPlaceholder && options.selectedIndex === 0) value = "";
 
         this.setState({
             [field]: {
                 value,
-                valid: true,
+                valid,
             },
         });
     }

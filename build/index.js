@@ -2261,9 +2261,9 @@ function (_React$Component) {
           props.ref = _this3.form.refs[name];
 
           if (type === "select") {
-            props.onChange = _this3.handleSelectChange.bind(_this3, name, typeof props.placeholder !== "undefined");
+            props.onChange = _this3.handleSelectChange.bind(_this3, name, typeof props.placeholder !== "undefined", props.onChange);
           } else {
-            props.onChange = _this3.handleChange.bind(_this3, name);
+            props.onChange = _this3.handleChange.bind(_this3, name, props.onChange);
           }
 
           if (type === "submit") {
@@ -2280,22 +2280,39 @@ function (_React$Component) {
     }
   }, {
     key: "handleChange",
-    value: function handleChange(field, e) {
+    value: function handleChange(field, onChange, e) {
+      var value = e.target.value;
+      var valid = true;
+
+      if (typeof onChange === "function") {
+        var changed = onChange(e);
+        if (changed && changed.value) value = changed.value;
+        if (changed && changed.valid) valid = changed.valid;
+      }
+
       this.setState(_defineProperty({}, field, {
-        value: e.target.value,
-        valid: true
+        value: value,
+        valid: valid
       }));
     }
   }, {
     key: "handleSelectChange",
-    value: function handleSelectChange(field, hasPlaceholder, e) {
+    value: function handleSelectChange(field, hasPlaceholder, onChange, e) {
       var _e$target = e.target,
           options = _e$target.options,
           value = _e$target.value;
+      var valid = true;
+
+      if (typeof onChange === "function") {
+        var changed = onChange(e);
+        if (changed && changed.value) value = changed.value;
+        if (changed && changed.valid) valid = changed.valid;
+      }
+
       if (hasPlaceholder && options.selectedIndex === 0) value = "";
       this.setState(_defineProperty({}, field, {
         value: value,
-        valid: true
+        valid: valid
       }));
     }
   }, {
