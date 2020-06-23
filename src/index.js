@@ -174,11 +174,14 @@ class Shlorm extends React.Component {
 
                 state[key].valid = valid;
 
-                if (!valid) {
+                if (!valid || typeof valid === "string") {
                     invalid.push({
                         field: key,
                         message:
-                            current.props.errorMessage || `${key} is invalid`,
+                            typeof valid === "string"
+                                ? valid
+                                : current.props.errorMessage ||
+                                  `${key} is invalid`,
                         ref: current,
                     });
 

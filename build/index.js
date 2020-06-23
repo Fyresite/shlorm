@@ -2315,10 +2315,10 @@ function (_React$Component) {
           var valid = current.props.validator(state[key].value, state);
           state[key].valid = valid;
 
-          if (!valid) {
+          if (!valid || typeof valid === "string") {
             invalid.push({
               field: key,
-              message: current.props.errorMessage || "".concat(key, " is invalid"),
+              message: typeof valid === "string" ? valid : current.props.errorMessage || "".concat(key, " is invalid"),
               ref: current
             });
 
