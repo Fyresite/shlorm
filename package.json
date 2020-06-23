@@ -1,6 +1,6 @@
 {
     "name": "@fyresite/shlorm",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "description": "React form library",
     "main": "./build/index.js",
     "scripts": {
