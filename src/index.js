@@ -39,6 +39,19 @@ class Shlorm extends React.Component {
         this.children = [];
     }
 
+    resetForm() {
+        // Reset form after submission
+        const newState = {};
+        Object.keys(this.state).forEach((key) => {
+            if (key === "submitted") {
+                newState[key] = null;
+            } else {
+                newState[key] = { value: "", valid: true };
+            }
+        });
+        this.setState(newState);
+    }
+
     // TODO: Fix this so that components that aren't part of the form can still re-render
     // shouldComponentUpdate(_, nextState) {
 
