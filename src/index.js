@@ -149,6 +149,9 @@ class Shlorm extends React.Component {
     }
 
     handleChange(field, e) {
+        if (typeof this.props.onChange === "function")
+            this.props.onChange(field, e.target.value);
+
         this.setState({
             [field]: {
                 value: e.target.value,
@@ -161,6 +164,9 @@ class Shlorm extends React.Component {
         let { options, value } = e.target;
 
         if (hasPlaceholder && options.selectedIndex === 0) value = "";
+
+        if (typeof this.props.onChange === "function")
+            this.props.onChange(field, value);
 
         this.setState({
             [field]: {
@@ -232,7 +238,7 @@ class Shlorm extends React.Component {
     }
 
     render() {
-        const { style, ...rest } = this.props;
+        const { style, onChange, ...rest } = this.props;
         this.children = this.updateChildren(this.state);
 
         return (

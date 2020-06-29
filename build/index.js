@@ -2298,6 +2298,7 @@ function (_React$Component) {
   }, {
     key: "handleChange",
     value: function handleChange(field, e) {
+      if (typeof this.props.onChange === "function") this.props.onChange(field, e.target.value);
       this.setState(_defineProperty({}, field, {
         value: e.target.value,
         valid: true
@@ -2310,6 +2311,7 @@ function (_React$Component) {
           options = _e$target.options,
           value = _e$target.value;
       if (hasPlaceholder && options.selectedIndex === 0) value = "";
+      if (typeof this.props.onChange === "function") this.props.onChange(field, value);
       this.setState(_defineProperty({}, field, {
         value: value,
         valid: true
@@ -2374,7 +2376,8 @@ function (_React$Component) {
     value: function render() {
       var _this$props = this.props,
           style = _this$props.style,
-          rest = src_objectWithoutProperties(_this$props, ["style"]);
+          onChange = _this$props.onChange,
+          rest = src_objectWithoutProperties(_this$props, ["style", "onChange"]);
 
       this.children = this.updateChildren(this.state);
       return external_react_default.a.createElement("form", src_extends({
