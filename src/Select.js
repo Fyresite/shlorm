@@ -20,6 +20,6 @@ class Select extends React.Component {
     }
 }
 
-Select.shlormType = 'select';
+Select.shlorm = "select";
 
 export default Select;

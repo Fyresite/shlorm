@@ -1,83 +1,25 @@
-import React from "react";
-import { v4 as uuid } from "uuid";
-import cloneDeep from "lodash.clonedeep";
+import React, { Component } from "react";
+import { cloneDeep } from "lodash";
 
-import Input from "./Input";
-import Select from "./Select";
+import recursiveForEach from "utils/recursive-for-each";
 
-class Shlorm extends React.Component {
+export class Shlorm extends Component {
     constructor(props) {
         super(props);
 
-        const state = { submitted: null };
+        this.state = { submitted: false };
+        this.inputs = [];
 
-        // Create state from children
-        if (props.children) {
-            React.Children.forEach(props.children, (child) => {
-                if (child.type.shlormType || child.props["shlorm-type"]) {
-                    const value = this.getChildValue(child);
-
-                    let type = child.type.shlormType;
-
-                    if (!type) type = child.props["shlorm-type"];
-
-                    // Only track the state of certain shlorm types
-                    if (!["submit"].includes(type)) {
-                        state[child.props.name] = {
-                            value,
-                            valid: true,
-                        };
-                    }
-                }
-            });
-        }
-
-        this.state = state;
-
-        this.form = { refs: {} };
-
-        this.children = [];
-    }
-
-    resetForm() {
-        // Reset form after submission
-        const newState = {};
-        Object.keys(this.state).forEach((key) => {
-            if (key === "submitted") {
-                newState[key] = null;
-            } else {
-                newState[key] = { value: "", valid: true };
+        recursiveForEach(props.children, (child) => {
+            if (child.type.shlorm) {
+                this.state[child.props.name] = {
+                    value: child.props.value || "",
+                    valid: child.props.valid || true,
+                    type: child.type.shlorm,
+                };
+                this.inputs.push(child);
             }
         });
-        this.setState(newState);
-    }
-
-    // TODO: Fix this so that components that aren't part of the form can still re-render
-    // shouldComponentUpdate(_, nextState) {
-
-    //     // Makes sure this component never updates, which increases performance by stopping
-    //     // unnecessary re-renders. We do want a re-render on submit though.
-    //     if (this.state.submitted !== nextState.submitted) {
-    //         return true;
-    //     }
-
-    //     return false;
-    // }
-
-    getChildValue(child) {
-        if (child.props.value) return child.props.value;
-
-        const type = child.type.shlormType || child.props["shlorm-type"];
-
-        if (type === "select") {
-            if (child.props.placeholder) {
-                return "";
-            }
-
-            return child.props.options[0].value;
-        }
-
-        return "";
     }
 
     getForm() {
@@ -90,141 +32,46 @@ class Shlorm extends React.Component {
         return form;
     }
 
-    updateChildren(state) {
-        if (!this.props.children) return [];
-
-        const children = React.Children.map(this.props.children, (_child) => {
-            // Remove shlorm boolean tags so we don't get any warnings
-            let { props: _props, ...child } = _child;
-
-            let {
-                "shlorm-type": type,
-                "shlorm-submit": submit,
-                ...props
-            } = _props;
-            child = { props, ...child };
-
-            const { name } = child.props;
-
-            props.key = name ? `shlorm-input-${name}` : uuid();
-
-            // If type is not defined here, we check the 'shlormType' property on the component instance itself
-            if (!type) type = _child.type.shlormType;
-
-            if (type) {
-                if (type !== "submit") {
-                    this.form.refs[name] = React.createRef();
-                    props.onKeyPress = (e) => {
-                        if (e.charCode === 13) {
-                            // Enter key
-                            // this.refs.form.submit();
-                            this.handleSubmit(e);
-                        }
-                    };
-                }
-
-                props.ref = this.form.refs[name];
-                if (type === "select") {
-                    props.onChange = this.handleSelectChange.bind(
-                        this,
-                        name,
-                        typeof props.placeholder !== "undefined"
-                    );
-                } else {
-                    props.onChange = this.handleChange.bind(this, name);
-                }
-
-                if (type === "submit") {
-                    props.onClick = this.handleSubmit.bind(this);
-                } else {
-                    // If type is not a submit button
-                    props = { ...props, ...state[name] }; // add value and valid to child
-                }
-            }
-
-            return React.createElement(child.type, props);
-        });
-
-        return children;
-    }
-
-    handleChange(field, e) {
-        if (typeof this.props.onChange === "function")
-            this.props.onChange(field, e.target.value);
-
+    handleFormChange = (e) => {
         this.setState({
-            [field]: {
+            [e.target.name]: {
                 value: e.target.value,
                 valid: true,
             },
         });
-    }
-
-    handleSelectChange(field, hasPlaceholder, e) {
-        let { options, value } = e.target;
-
-        if (hasPlaceholder && options.selectedIndex === 0) value = "";
-
-        if (typeof this.props.onChange === "function")
-            this.props.onChange(field, value);
-
-        this.setState({
-            [field]: {
-                value,
-                valid: true,
-            },
-        });
-    }
+    };
 
     handleSubmit(e) {
         e.preventDefault();
 
-        const { refs } = this.form;
         const state = cloneDeep(this.state);
+        const invalid = [];
 
-        let invalid = [];
-        let focused = false;
+        this.inputs.forEach((input) => {
+            const { errorMessage, name, validator } = input.props;
+            const { value } = this.state[name];
+            const valid = validator(value);
 
-        Object.keys(refs).forEach((key) => {
-            const { current } = refs[key];
+            state[name].valid = valid;
 
-            if (current.props && current.props.validator) {
-                let valid = current.props.validator(state[key].value, state);
-
-                state[key].valid = valid;
-
-                if (!valid || typeof valid === "string") {
-                    invalid.push({
-                        field: key,
-                        message:
-                            typeof valid === "string"
-                                ? valid
-                                : current.props.errorMessage ||
-                                  `${key} is invalid`,
-                        ref: current,
-                    });
-
-                    if (current.input) {
-                        // Material UI case
-                        const ref = current.input;
-
-                        if (ref.focus && !focused) {
-                            ref.focus();
-                            focused = true;
-                        }
-                    } else {
-                        Object.keys(current.refs).forEach((key) => {
-                            const ref = current.refs[key];
-
-                            if (ref.focus && !focused) {
-                                ref.focus();
-                                focused = true;
-                            }
-                        });
-                    }
-                }
+            if (!valid || typeof valid === "string") {
+                invalid.push({
+                    name,
+                    message:
+                        typeof valid === "string"
+                            ? valid
+                            : errorMessage || `${name} is invalid`,
+                });
             }
         });
+
+        if (invalid.length) {
+            const { name } = invalid[0];
+
+            this.form
+                .querySelector(`${state[name].type}[name="${name}"]`)
+                .focus();
+        }
 
         state.submitted = Date.now();
 
@@ -238,23 +85,17 @@ class Shlorm extends React.Component {
     }
 
     render() {
-        const { style, onChange, ...rest } = this.props;
-        this.children = this.updateChildren(this.state);
-
+        const { children } = this.props;
         return (
             <form
+                onChange={this.handleFormChange.bind(this)}
                 onSubmit={this.handleSubmit.bind(this)}
-                style={{ display: "flex", flexDirection: "column", ...style }}
-                {...rest}
+                ref={(ref) => (this.form = ref)}
             >
-                {this.children}
+                {children}
             </form>
         );
     }
 }
-
-Shlorm.displayName = "Shlorm";
-
-export { Input, Select };
 
 export default Shlorm;
